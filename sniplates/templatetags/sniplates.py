@@ -82,22 +82,21 @@ def widget(context, widget, **kwargs):
     try:
         alias, block_name = widget.split(':', 1)
     except ValueError:
-        raise template.ValidationError('widget name must be "alias:block_name" - %s' % widget)
+        raise template.TemplateSyntaxError('widget name must be "alias:block_name" - %s' % widget)
 
     try:
         widgets = context.render_context[WIDGET_CONTEXT_KEY]
     except KeyError:
-        raise template.ValidationError("No widget libraries loaded!")
+        raise template.TemplateSyntaxError("No widget libraries loaded!")
 
     try:
         block_set = widgets[alias]
     except KeyError:
-        raise template.ValidationError('No widget library loaded for alias: %r' % alias)
+        raise template.TemplateSyntaxError('No widget library loaded for alias: %r' % alias)
 
-    try:
-        block = block_set[block_name]
-    except KeyError:
-        raise template.ValidationError('No widget named %r in set %r' % (block_name, alias))
+    block = block_set.get_block(block_name)
+    if block is None:
+        raise template.TemplateSyntaxError('No widget named %r in set %r' % (block_name, alias))
 
     with context.push(**kwargs):
         return block.render(context)
