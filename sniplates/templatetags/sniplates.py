@@ -13,7 +13,7 @@ Sniplates
 
 Re-usable template widgets.
 
-{% load_widgets alias="tempalte.name" .... %}
+{% load_widgets alias="template.name" .... %}
 
 
 {% widget 'alias:blockname' .... %}
