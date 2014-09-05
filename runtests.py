@@ -18,7 +18,8 @@ if not settings.configured:
         INSTALLED_APPS=(
             'sniplates',
             'tests',
-        )
+        ),
+        MIDDLEWARE_CLASSES=[],
     )
 
 
