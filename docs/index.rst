@@ -12,7 +12,7 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-
+   tags
 
 Overview
 ========
@@ -60,8 +60,8 @@ Now, when you need to add a label or alert in your page:
 
 .. code-block:: django
 
-   {% sniplate "bootstrap:label" text="Things go here" %}
-   {% sniplate "bootstrap:alert" text="It's alive" alert_type="info" %}
+   {% widget "bootstrap:label" text="Things go here" %}
+   {% widget "bootstrap:alert" text="It's alive" alert_type="info" %}
 
 
 Indices and tables
