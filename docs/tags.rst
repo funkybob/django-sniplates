@@ -8,6 +8,7 @@ The `load_widgets` tag
 ----------------------
 
 .. code-block:: django
+
    {% load_widgets alias=template_name ... %}
 
 This tag is used to load widget libraries from templates.  You can load more
@@ -20,6 +21,7 @@ The `widget` tag
 ----------------
 
 .. code-block:: django
+
    {% widget 'alias:block_name' .... %}
 
 Renders the specified widget with the current context.  You can provide extra
