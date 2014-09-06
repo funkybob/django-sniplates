@@ -8,6 +8,16 @@ Django Sniplates
 
 .. rubric:: Efficient template macros
 
+.. image:: https://travis-ci.org/funkybob/django-sniplates.png
+              :target: https://secure.travis-ci.org/funkybob/django-sniplates.png?branch=master
+
+.. image:: https://pypip.in/d/django-sniplates/badge.png
+              :target: https://crate.io/packages/django-sniplates
+
+.. image:: https://pypip.in/v/django-sniplates/badge.png
+              :target: https://crate.io/packages/django-sniplates
+
+
 Contents:
 
 .. toctree::
