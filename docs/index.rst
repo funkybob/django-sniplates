@@ -16,7 +16,7 @@ Contents:
    tags
 
 Overview
-========
+--------
 
 Have you ever found yourself repeating chunks of your templates, and wishing
 Django had a "macro" in templates?
@@ -26,8 +26,15 @@ Tried using {% include %} only to find it slow and clumsy?
 Introducing Sniplates - the efficient way to provide your template authors with
 an arsenal of template macros.
 
+Requirements
+------------
+
+Currently sniplates requires Django 1.7.  It depends on a feature of Context
+that was only added in 1.7, however with sufficient demand it's easy to add
+support for older versions of Django.
+
 Quick-start
-===========
+-----------
 
 First, install sniplates:
 
