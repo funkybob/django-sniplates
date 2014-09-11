@@ -114,3 +114,21 @@ class TestWidgetTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, 'more value')
+
+
+class TestInheritance(TemplateTestMixin, SimpleTestCase):
+    TEMPLATES = {
+        'base': '''DOCUMENT {% block content %}{% endblock %}''',
+        'block_overlap_widgets': '''{% block foo %}foo{% endblock %}''',
+        'block_overlap': '''{% extends 'base' %}{% load sniplates %}{% load_widgets foo='block_overlap_widgets' %}{% block content %}content {% widget 'foo:bar' %}{% endblock %}{% block bar %}bar{% endblock %}''',
+    }
+
+    def test_block_overlap(self):
+        '''
+        Ensure that when we reference a block from a sniplate that doesn't
+        exist, but is in our template, it isn't used.
+        '''
+        tmpl = get_template('block_overlap')
+
+        with self.assertRaises(TemplateSyntaxError):
+            tmpl.render(self.ctx)
