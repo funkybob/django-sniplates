@@ -121,6 +121,10 @@ class TestInheritance(TemplateTestMixin, SimpleTestCase):
         'base': '''DOCUMENT {% block content %}{% endblock %}''',
         'block_overlap_widgets': '''{% block foo %}foo{% endblock %}''',
         'block_overlap': '''{% extends 'base' %}{% load sniplates %}{% load_widgets foo='block_overlap_widgets' %}{% block content %}content {% widget 'foo:bar' %}{% endblock %}{% block bar %}bar{% endblock %}''',
+
+        'parent_inherit': '''{% extends 'parent_inherit_base' %}{% load sniplates %}{% block content %}{% widget 'foo:test' %}{% endblock %}''',
+        'parent_inherit_base': '''{% load sniplates %}{% load_widgets foo='parent_inherit_widgets' %}{% block content %}{% endblock %}''',
+        'parent_inherit_widgets': '''{% block test %}foo{% endblock %}''',
     }
 
     def test_block_overlap(self):
@@ -132,3 +136,13 @@ class TestInheritance(TemplateTestMixin, SimpleTestCase):
 
         with self.assertRaises(TemplateSyntaxError):
             tmpl.render(self.ctx)
+
+    def test_parent_inherit(self):
+        '''
+        When our parent template loads sniplates, we should have access to them
+        also.
+        '''
+        tmpl = get_template('parent_inherit')
+        output = tmpl.render(self.ctx)
+
+        self.assertEqual(output, 'foo')
