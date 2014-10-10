@@ -98,5 +98,8 @@ def widget(context, widget, **kwargs):
     if block is None:
         raise template.TemplateSyntaxError('No widget named %r in set %r' % (block_name, alias))
 
-    with context.push(**kwargs):
+    context.update(kwargs)
+    try:
         return block.render(context)
+    finally:
+        context.pop()

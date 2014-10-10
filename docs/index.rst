@@ -39,9 +39,9 @@ an arsenal of template macros.
 Requirements
 ------------
 
-Currently sniplates requires Django 1.7.  It depends on a feature of Context
-that was only added in 1.7, however with sufficient demand it's easy to add
-support for older versions of Django.
+Has been tested with Django 1.6 and 1.7.
+
+Should work fine with older versions, but has not been tested.
 
 Quick-start
 -----------
