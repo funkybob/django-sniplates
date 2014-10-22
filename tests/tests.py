@@ -125,7 +125,10 @@ class TestInheritance(TemplateTestMixin, SimpleTestCase):
         'parent_inherit': '''{% extends 'parent_inherit_base' %}{% load sniplates %}{% block content %}{% widget 'foo:test' %}{% endblock %}''',
         'parent_inherit_base': '''{% load sniplates %}{% load_widgets foo='parent_inherit_widgets' %}{% block content %}{% endblock %}''',
         'parent_inherit_widgets': '''{% block test %}foo{% endblock %}''',
-    }
+
+        'parent_overlap': '''{% load sniplates %}{% load_widgets foo='parent_overlap_widgets' %}{% block main %}first{% endblock%}''',
+        'parent_overlap_widgets': '''{% block main %}second{% endblock %}''',
+     }
 
     def test_block_overlap(self):
         '''
@@ -146,3 +149,14 @@ class TestInheritance(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, 'foo')
+
+    def test_parent_overlap(self):
+        '''
+        If a sniplate library has a block of the same name as in the calling
+        template, we should NOT override it.
+        '''
+        tmpl = get_template('parent_overlap')
+        output = tmpl.render(self.ctx)
+
+        self.assertEqual(output, 'first')
+
