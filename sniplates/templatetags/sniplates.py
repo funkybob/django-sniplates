@@ -1,4 +1,6 @@
 
+from copy import copy
+
 from django import template
 from django.template.loader import get_template
 from django.template.loader_tags import (
@@ -69,9 +71,14 @@ def load_widgets(context, **kwargs):
     except KeyError:
         widgets = context.render_context[WIDGET_CONTEXT_KEY] = {}
 
+    safe_context = copy(context)
+    safe_context.render_context = safe_context.render_context.new({
+        BLOCK_CONTEXT_KEY: BlockContext(),
+    })
+
     # XXX Should we deal with stacking?
     for alias, template_name in kwargs.items():
-        blocks = resolve_blocks(template_name, context)
+        blocks = resolve_blocks(template_name, safe_context)
         widgets[alias] = blocks
 
     return ''
