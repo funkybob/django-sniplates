@@ -7,6 +7,7 @@ from django.template.loader_tags import (
     BlockNode, ExtendsNode, BlockContext, BLOCK_CONTEXT_KEY,
 )
 from django.utils import six
+from django.utils.encoding import force_text
 
 register = template.Library()
 
@@ -60,6 +61,46 @@ def resolve_blocks(template, context):
     return blocks
 
 
+def parse_widget_name(widget):
+    '''
+    Parse a alias:block_name string into separate parts.
+    '''
+    try:
+        alias, block_name = widget.split(':', 1)
+    except ValueError:
+        raise template.TemplateSyntaxError(
+            'widget name must be "alias:block_name" - %s' % widget
+        )
+
+    return alias, block_name
+
+
+def lookup_block(context, alias, *names):
+    '''
+    Find the first available block in a given alias set.
+    '''
+
+    try:
+        widgets = context.render_context[WIDGET_CONTEXT_KEY]
+    except KeyError:
+        raise template.TemplateSyntaxError("No widget libraries loaded!")
+
+    try:
+        block_set = widgets[alias]
+    except KeyError:
+        raise template.TemplateSyntaxError(
+            'No widget library loaded for alias: %r' % alias
+        )
+
+    for name in names:
+        block = block_set.get_block(name)
+        if block is not None:
+            return block
+    raise template.TemplateSyntaxError(
+        'No widget found in %r for: %r' % (alias, names)
+    )
+
+
 @register.simple_tag(takes_context=True)
 def load_widgets(context, **kwargs):
     '''
@@ -86,27 +127,79 @@ def load_widgets(context, **kwargs):
 
 @register.simple_tag(takes_context=True)
 def widget(context, widget, **kwargs):
-    try:
-        alias, block_name = widget.split(':', 1)
-    except ValueError:
-        raise template.TemplateSyntaxError('widget name must be "alias:block_name" - %s' % widget)
+    alias, block_name = parse_widget_name(widget)
 
-    try:
-        widgets = context.render_context[WIDGET_CONTEXT_KEY]
-    except KeyError:
-        raise template.TemplateSyntaxError("No widget libraries loaded!")
-
-    try:
-        block_set = widgets[alias]
-    except KeyError:
-        raise template.TemplateSyntaxError('No widget library loaded for alias: %r' % alias)
-
-    block = block_set.get_block(block_name)
+    block = lookup_block(context, alias, block_name)
     if block is None:
-        raise template.TemplateSyntaxError('No widget named %r in set %r' % (block_name, alias))
+        raise template.TemplateSyntaxError(
+            'No widget named %r in set %r' % (block_name, alias)
+        )
 
     context.update(kwargs)
     try:
         return block.render(context)
     finally:
         context.pop()
+
+
+@register.simple_tag(takes_context=True)
+def form_field(context, field, widget=None, **kwargs):
+    if widget is None:
+        alias = kwargs.pop('alias', 'form')
+
+        block = lookup_block(context, alias, *auto_widget(field))
+    else:
+        alias, block_name = parse_widget_name(widget)
+
+        block = lookup_block(context, alias, block_name)
+
+    field_data = {
+        'form_field': field,
+        'id': field.auto_id,
+    }
+
+    for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
+                 'html_name', 'id_for_label', 'label', 'name', 'value',):
+        field_data[attr] = getattr(field, attr)
+
+    for attr in ('choices', 'widget', 'required'):
+        field_data[attr] = getattr(field.field, attr, None)
+        if attr == 'choices' and field_data[attr]:
+            field_data[attr] = [
+                (force_text(k), v)
+                for k, v in field_data[attr]
+            ]
+            # Normalize the value [django.forms.widgets.Select.render_options]
+            field_data['value'] = force_text(field_data['value']())
+
+    # Allow supplied values to override field data
+    field_data.update(kwargs)
+
+    context.update(kwargs)
+    try:
+        return block.render(context)
+    finally:
+        context.pop()
+
+
+def auto_widget(field):
+    '''Return a list of widget names for the provided field.'''
+    # Auto-detect
+    info = {
+        'widget': field.field.widget.__class__.__name__,
+        'field': field.field.__class__.__name__,
+        'name': field.name,
+    }
+
+    return [
+        fmt.format(**info)
+        for fmt in (
+            '{field}_{widget}_{name}',
+            '{field}_{name}',
+            '{widget}_{name}',
+            '{field}_{widget}',
+            '{name}',
+            '{widget}',
+            '{field}',
+        )
+    ]
