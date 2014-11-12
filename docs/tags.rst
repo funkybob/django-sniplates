@@ -90,3 +90,25 @@ And these from the ``Field`` itself:
 - widget
 - required
 
+
+The `nested_widget` tag
+=======================
+
+.. code-block:: django
+
+   {% nested_widget widgetname .... %}
+       ...
+   {% endnested %}
+
+This tag is a container block that will render its contents, and pass the
+output to its widget as 'content'.
+
+An example use of this is for wrapping fields in a fieldset template:
+
+.. code-block:: django
+
+    {% nested_widget 'form:fieldset' caption="About You" %}
+        {% form_field form.first_name %} <br>
+        {% form_field form.last_name %}
+    {% endnested %}
+

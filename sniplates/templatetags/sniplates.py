@@ -2,6 +2,7 @@
 from copy import copy
 
 from django import template
+from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
     BlockNode, ExtendsNode, BlockContext, BLOCK_CONTEXT_KEY,
@@ -140,6 +141,58 @@ def widget(context, widget, **kwargs):
         return block.render(context)
     finally:
         context.pop()
+
+
+class NestedWidget(template.Node):
+    def __init__(self, widget, nodelist, kwargs):
+        self.widget = widget
+        self.nodelist = nodelist
+        self.kwargs = kwargs
+
+    def render(self, context):
+        widget = self.widget.resolve(context)
+
+        alias, block_name = parse_widget_name(widget)
+
+        block = lookup_block(context, alias, block_name)
+        if block is None:
+            raise template.TemplateSyntaxError(
+                'No widget named %r in set %r' % (block_name, alias)
+            )
+
+        kwargs = {
+            key: val.resolve(context)
+            for key, val in self.kwargs.items()
+        }
+        context.update(kwargs)
+        try:
+            content = self.nodelist.render(context)
+            try:
+                context.update({'content': content})
+                return block.render(context)
+            finally:
+                context.pop()
+        finally:
+            context.pop()
+
+@register.tag
+def nested_widget(parser, token):
+    bits = token.split_contents()
+    tag_name = bits.pop(0)
+
+    try:
+        widget = parser.compile_filter(bits.pop(0))
+    except IndexError:
+        raise template.TemplateSyntaxError('%s requires one positional argument' % tag_name)
+
+    kwargs = token_kwargs(bits, parser)
+    if bits:
+        raise template.TemplateSyntaxError('%s accepts only one positional argument' % tag_name)
+
+    nodelist = parser.parse(('endnested',))
+    parser.delete_first_token()
+
+    return NestedWidget(widget, nodelist, kwargs)
 
 
 @register.simple_tag(takes_context=True)

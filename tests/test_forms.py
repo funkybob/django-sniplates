@@ -1,14 +1,9 @@
 
-from django import forms
 from django.template.loader import get_template
 from django.test import SimpleTestCase
 
+from .forms import TestForm
 from .utils import TemplateTestMixin
-
-
-class TestForm(forms.Form):
-    char = forms.CharField()
-    oneof = forms.ChoiceField(choices=tuple(enumerate('abcd')))
 
 
 class TestFieldTag(TemplateTestMixin, SimpleTestCase):
@@ -19,8 +14,14 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 <option value="{{ val }}">{{ display }}</option>{% endfor %}
             </select>{% endblock %}
         ''',
+        'widget2': '''
+            {% block CharField %}<input type="dummy" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}
+            {% block password %}<input type="password" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}
+        ''',
         'field': '''{% load sniplates %}{% load_widgets form="widgets" %}{% form_field form.char %}''',
         'choices': '''{% load sniplates %}{% load_widgets form="widgets" %}{% form_field form.oneof %}''',
+        'override': '''{% load sniplates %}{% load_widgets form="widgets" other="widget2" %}{% form_field form.char widget="other:password" %}''',
+        'override2': '''{% load sniplates %}{% load_widgets form="widgets" other="widget2" %}{% form_field form.char alias="other" %}''',
     }
     def setUp(self):
         super(TestFieldTag, self).setUp()
@@ -38,3 +39,14 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertTrue('<option value="0">a</option>' in output)
+
+    def test_widget_override(self):
+        tmpl = get_template('override')
+        output = tmpl.render(self.ctx)
+
+        self.assertTrue('type="password"' in output)
+
+        tmpl = get_template('override2')
+        output = tmpl.render(self.ctx)
+
+        self.assertTrue('type="dummy"' in output)
