@@ -15,4 +15,3 @@ class TemplateTestMixin(object):
 
     def setUp(self):
         self.ctx = Context()
-

@@ -1,7 +1,9 @@
 
+from django.template.loader import get_template
 from django.test import SimpleTestCase
 
 from .utils import TemplateTestMixin
+
 
 class TestFieldTag(TemplateTestMixin, SimpleTestCase):
     TEMPLATES = {
@@ -14,4 +16,3 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         '''
         tmpl = get_template('field')
         output = tmpl.render(self.ctx)
-
