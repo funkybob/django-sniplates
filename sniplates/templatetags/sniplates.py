@@ -164,18 +164,19 @@ def form_field(context, field, widget=None, **kwargs):
 
     for attr in ('choices', 'widget', 'required'):
         field_data[attr] = getattr(field.field, attr, None)
-        if attr == 'choices' and field_data[attr]:
-            field_data[attr] = [
-                (force_text(k), v)
-                for k, v in field_data[attr]
-            ]
-            # Normalize the value [django.forms.widgets.Select.render_options]
-            field_data['value'] = force_text(field_data['value']())
+
+    if field_data['choices']:
+        field_data['choices'] = [
+            (force_text(k), v)
+            for k, v in field_data['choices']
+        ]
+        # Normalize the value [django.forms.widgets.Select.render_options]
+        field_data['value'] = force_text(field_data['value']())
 
     # Allow supplied values to override field data
     field_data.update(kwargs)
 
-    context.update(kwargs)
+    context.update(field_data)
     try:
         return block.render(context)
     finally:
