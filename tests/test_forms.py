@@ -46,6 +46,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
         self.assertTrue('type="password"' in output)
 
+
+    def test_widget_override2(self):
         tmpl = get_template('override2')
         output = tmpl.render(self.ctx)
 
