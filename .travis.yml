@@ -11,7 +11,7 @@ env:
   - DJANGO="Django<1.8"
 
 install:
-  - pip install "$DJANGO" --use-mirrors
+  - pip install $DJANGO --use-mirrors
 
 script:
   - python runtests.py
