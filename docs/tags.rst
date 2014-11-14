@@ -112,3 +112,15 @@ An example use of this is for wrapping fields in a fieldset template:
         {% form_field form.last_name %}
     {% endnested %}
 
+
+The `flatattrs` filter
+=======================
+
+.. code-block:: django
+
+   {{ attrdict|flatarrs }}
+
+This is simply a wrapper around :func:`django.forms.utils.flatatt`
+
+It converts a dict of attributes into a string, in proper key="value" syntax.
+The values will be escaped, but keys will not.

@@ -1,6 +1,10 @@
 
 from copy import copy
 
+try:
+    from django.forms.utils import flatatt
+except ImportError:  # Django 1.5 compatibility
+    from django.forms.util import flatatt
 from django import template
 from django.template.base import token_kwargs
 from django.template.loader import get_template
@@ -256,3 +260,8 @@ def auto_widget(field):
             '{field}',
         )
     ]
+
+@register.filter
+def flatattrs(attrs):
+    return flatatt(attrs)
+
