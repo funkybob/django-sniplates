@@ -2,11 +2,13 @@
 from copy import copy
 
 from django import template
+from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
     BlockNode, ExtendsNode, BlockContext, BLOCK_CONTEXT_KEY,
 )
 from django.utils import six
+from django.utils.encoding import force_text
 
 register = template.Library()
 
@@ -60,6 +62,46 @@ def resolve_blocks(template, context):
     return blocks
 
 
+def parse_widget_name(widget):
+    '''
+    Parse a alias:block_name string into separate parts.
+    '''
+    try:
+        alias, block_name = widget.split(':', 1)
+    except ValueError:
+        raise template.TemplateSyntaxError(
+            'widget name must be "alias:block_name" - %s' % widget
+        )
+
+    return alias, block_name
+
+
+def lookup_block(context, alias, *names):
+    '''
+    Find the first available block in a given alias set.
+    '''
+
+    try:
+        widgets = context.render_context[WIDGET_CONTEXT_KEY]
+    except KeyError:
+        raise template.TemplateSyntaxError("No widget libraries loaded!")
+
+    try:
+        block_set = widgets[alias]
+    except KeyError:
+        raise template.TemplateSyntaxError(
+            'No widget library loaded for alias: %r' % alias
+        )
+
+    for name in names:
+        block = block_set.get_block(name)
+        if block is not None:
+            return block
+    raise template.TemplateSyntaxError(
+        'No widget found in %r for: %r' % (alias, names)
+    )
+
+
 @register.simple_tag(takes_context=True)
 def load_widgets(context, **kwargs):
     '''
@@ -71,13 +113,12 @@ def load_widgets(context, **kwargs):
     except KeyError:
         widgets = context.render_context[WIDGET_CONTEXT_KEY] = {}
 
-    safe_context = copy(context)
-    safe_context.render_context = safe_context.render_context.new({
-        BLOCK_CONTEXT_KEY: BlockContext(),
-    })
-
-    # XXX Should we deal with stacking?
     for alias, template_name in kwargs.items():
+        # Build an isolated render context each time
+        safe_context = copy(context)
+        safe_context.render_context = safe_context.render_context.new({
+            BLOCK_CONTEXT_KEY: BlockContext(),
+        })
         blocks = resolve_blocks(template_name, safe_context)
         widgets[alias] = blocks
 
@@ -86,27 +127,132 @@ def load_widgets(context, **kwargs):
 
 @register.simple_tag(takes_context=True)
 def widget(context, widget, **kwargs):
-    try:
-        alias, block_name = widget.split(':', 1)
-    except ValueError:
-        raise template.TemplateSyntaxError('widget name must be "alias:block_name" - %s' % widget)
+    alias, block_name = parse_widget_name(widget)
 
-    try:
-        widgets = context.render_context[WIDGET_CONTEXT_KEY]
-    except KeyError:
-        raise template.TemplateSyntaxError("No widget libraries loaded!")
-
-    try:
-        block_set = widgets[alias]
-    except KeyError:
-        raise template.TemplateSyntaxError('No widget library loaded for alias: %r' % alias)
-
-    block = block_set.get_block(block_name)
+    block = lookup_block(context, alias, block_name)
     if block is None:
-        raise template.TemplateSyntaxError('No widget named %r in set %r' % (block_name, alias))
+        raise template.TemplateSyntaxError(
+            'No widget named %r in set %r' % (block_name, alias)
+        )
 
     context.update(kwargs)
     try:
         return block.render(context)
     finally:
         context.pop()
+
+
+class NestedWidget(template.Node):
+    def __init__(self, widget, nodelist, kwargs):
+        self.widget = widget
+        self.nodelist = nodelist
+        self.kwargs = kwargs
+
+    def render(self, context):
+        widget = self.widget.resolve(context)
+
+        alias, block_name = parse_widget_name(widget)
+
+        block = lookup_block(context, alias, block_name)
+        if block is None:
+            raise template.TemplateSyntaxError(
+                'No widget named %r in set %r' % (block_name, alias)
+            )
+
+        kwargs = {
+            key: val.resolve(context)
+            for key, val in self.kwargs.items()
+        }
+        context.update(kwargs)
+        try:
+            content = self.nodelist.render(context)
+            try:
+                context.update({'content': content})
+                return block.render(context)
+            finally:
+                context.pop()
+        finally:
+            context.pop()
+
+@register.tag
+def nested_widget(parser, token):
+    bits = token.split_contents()
+    tag_name = bits.pop(0)
+
+    try:
+        widget = parser.compile_filter(bits.pop(0))
+    except IndexError:
+        raise template.TemplateSyntaxError('%s requires one positional argument' % tag_name)
+
+    kwargs = token_kwargs(bits, parser)
+    if bits:
+        raise template.TemplateSyntaxError('%s accepts only one positional argument' % tag_name)
+
+    nodelist = parser.parse(('endnested',))
+    parser.delete_first_token()
+
+    return NestedWidget(widget, nodelist, kwargs)
+
+
+@register.simple_tag(takes_context=True)
+def form_field(context, field, widget=None, **kwargs):
+    if widget is None:
+        alias = kwargs.pop('alias', 'form')
+
+        block = lookup_block(context, alias, *auto_widget(field))
+    else:
+        alias, block_name = parse_widget_name(widget)
+
+        block = lookup_block(context, alias, block_name)
+
+    field_data = {
+        'form_field': field,
+        'id': field.auto_id,
+    }
+
+    for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
+                 'html_name', 'id_for_label', 'label', 'name', 'value',):
+        field_data[attr] = getattr(field, attr)
+
+    for attr in ('choices', 'widget', 'required'):
+        field_data[attr] = getattr(field.field, attr, None)
+
+    if field_data['choices']:
+        field_data['choices'] = [
+            (force_text(k), v)
+            for k, v in field_data['choices']
+        ]
+        # Normalize the value [django.forms.widgets.Select.render_options]
+        field_data['value'] = force_text(field_data['value']())
+
+    # Allow supplied values to override field data
+    field_data.update(kwargs)
+
+    context.update(field_data)
+    try:
+        return block.render(context)
+    finally:
+        context.pop()
+
+
+def auto_widget(field):
+    '''Return a list of widget names for the provided field.'''
+    # Auto-detect
+    info = {
+        'widget': field.field.widget.__class__.__name__,
+        'field': field.field.__class__.__name__,
+        'name': field.name,
+    }
+
+    return [
+        fmt.format(**info)
+        for fmt in (
+            '{field}_{widget}_{name}',
+            '{field}_{name}',
+            '{widget}_{name}',
+            '{field}_{widget}',
+            '{name}',
+            '{widget}',
+            '{field}',
+        )
+    ]
