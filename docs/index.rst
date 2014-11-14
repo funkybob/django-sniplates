@@ -25,6 +25,7 @@ Contents:
 
    tags
    changelog
+   formulation
 
 Overview
 --------
