@@ -41,9 +41,8 @@ an arsenal of template macros.
 Requirements
 ------------
 
-Has been tested with Django 1.6 and 1.7.
-
-Should work fine with older versions, but has not been tested.
+Requires Django 1.4 or newer, and is tested against Python 2.7, 3.3, 3.4, and
+PyPy.
 
 Quick-start
 -----------
