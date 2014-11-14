@@ -2,7 +2,8 @@
 Tags
 ====
 
-There are only two tags in snipates: load_widgets and widget
+There are only a few tags in snipates: load_widgets, widget, form_field and
+nested_widget.  There is also a single filter: flatattrs.
 
 
 The `load_widgets` tag
