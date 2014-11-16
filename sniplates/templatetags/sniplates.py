@@ -83,6 +83,8 @@ def parse_widget_name(widget):
 def lookup_block(context, alias, *names):
     '''
     Find the first available block in a given alias set.
+
+    Samurai.
     '''
 
     try:
@@ -134,10 +136,6 @@ def widget(context, widget, **kwargs):
     alias, block_name = parse_widget_name(widget)
 
     block = lookup_block(context, alias, block_name)
-    if block is None:
-        raise template.TemplateSyntaxError(
-            'No widget named %r in set %r' % (block_name, alias)
-        )
 
     context.update(kwargs)
     try:
@@ -158,10 +156,6 @@ class NestedWidget(template.Node):
         alias, block_name = parse_widget_name(widget)
 
         block = lookup_block(context, alias, block_name)
-        if block is None:
-            raise template.TemplateSyntaxError(
-                'No widget named %r in set %r' % (block_name, alias)
-            )
 
         kwargs = {
             key: val.resolve(context)
