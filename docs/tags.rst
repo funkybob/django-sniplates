@@ -117,6 +117,7 @@ The `reuse` tag
 ===============
 
 .. code-block:: django
+
    {% reuse blockname ... %}
 
 Much like the `widget` tag, this re-renders an existing block tag in situ.
@@ -125,6 +126,8 @@ searches the current template.  This allows templates extending a base to
 define reusable "macro" blocks, without having to load a separate widget set.
 
 As with other tags, you can extend the context by passing keyword arguments.
+
+.. note:: This tag only works in templates that {% extends %} another template.
 
 The `flatattrs` filter
 =======================
