@@ -4,7 +4,6 @@ Tags
 
 The sniplates app consists solely of a custom template tag library.
 
-
 The `load_widgets` tag
 ======================
 
