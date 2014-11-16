@@ -178,6 +178,7 @@ class NestedWidget(template.Node):
         finally:
             context.pop()
 
+
 @register.tag
 def nested_widget(parser, token):
     bits = token.split_contents()
@@ -186,11 +187,15 @@ def nested_widget(parser, token):
     try:
         widget = parser.compile_filter(bits.pop(0))
     except IndexError:
-        raise template.TemplateSyntaxError('%s requires one positional argument' % tag_name)
+        raise template.TemplateSyntaxError(
+            '%s requires one positional argument' % tag_name
+        )
 
     kwargs = token_kwargs(bits, parser)
     if bits:
-        raise template.TemplateSyntaxError('%s accepts only one positional argument' % tag_name)
+        raise template.TemplateSyntaxError(
+            '%s accepts only one positional argument' % tag_name
+        )
 
     nodelist = parser.parse(('endnested',))
     parser.delete_first_token()
@@ -261,7 +266,35 @@ def auto_widget(field):
         )
     ]
 
+
 @register.filter
 def flatattrs(attrs):
     return flatatt(attrs)
 
+
+@register.simple_tag(takes_context=True)
+def reuse(context, block_list, **kwargs):
+    '''
+    Allow reuse of a block within a template.
+
+    {% reuse '_myblock' foo=bar %}
+    {% reuse list_of_block_names .... %}
+    '''
+    block_context = context.render_context[BLOCK_CONTEXT_KEY]
+
+    if not isinstance(block_list, (list, tuple)):
+        block_list = [block_list]
+
+    for name in block_list:
+        block = block_context.get_block(name)
+        if block is not None:
+            break
+
+    if block is None:
+        return ''
+
+    context.update(kwargs)
+    try:
+        return block.render(context)
+    finally:
+        context.pop()
