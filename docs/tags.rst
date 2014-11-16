@@ -2,7 +2,7 @@
 Tags
 ====
 
-There are only two tags in snipates: load_widgets and widget
+The sniplates app consists solely of a custom template tag library.
 
 
 The `load_widgets` tag
@@ -112,6 +112,19 @@ An example use of this is for wrapping fields in a fieldset template:
         {% form_field form.last_name %}
     {% endnested %}
 
+
+The `reuse` tag
+===============
+
+.. code-block:: django
+   {% reuse blockname ... %}
+
+Much like the `widget` tag, this re-renders an existing block tag in situ.
+However, instead of looking for the block in a loaded widget library, it
+searches the current template.  This allows templates extending a base to
+define reusable "macro" blocks, without having to load a separate widget set.
+
+As with other tags, you can extend the context by passing keyword arguments.
 
 The `flatattrs` filter
 =======================
