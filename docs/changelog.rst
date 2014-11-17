@@ -2,6 +2,13 @@
 Changelog
 =========
 
+0.2.1
+-----
+
+Features:
+
+- Added `reuse` tag.
+
 0.2.0
 -----
 
