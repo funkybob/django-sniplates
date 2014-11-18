@@ -8,6 +8,8 @@ Changelog
 Features:
 
 - Added `reuse` tag.
+- Added 'widget_type' and 'field_type' to exploded data in form_field
+- Added 'display' to exploded data in form_field
 
 0.2.0
 -----
