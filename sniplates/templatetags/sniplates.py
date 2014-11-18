@@ -211,6 +211,8 @@ def form_field(context, field, widget=None, **kwargs):
     field_data = {
         'form_field': field,
         'id': field.auto_id,
+        'widget_type': field.field.widget.__class__.__name__,
+        'field_type': field.field.__class__.__name__,
     }
 
     for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
@@ -221,6 +223,7 @@ def form_field(context, field, widget=None, **kwargs):
         field_data[attr] = getattr(field.field, attr, None)
 
     if field_data['choices']:
+        field_data['display'] = dict(field.field.choices).get(field.value, '')
         field_data['choices'] = [
             (force_text(k), v)
             for k, v in field_data['choices']
