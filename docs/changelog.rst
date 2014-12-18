@@ -2,6 +2,13 @@
 Changelog
 =========
 
+0.2.2
+-----
+
+Bugs fixed:
+
+- Fix forcing multi-value fields to unicode in form tag
+
 0.2.1
 -----
 
