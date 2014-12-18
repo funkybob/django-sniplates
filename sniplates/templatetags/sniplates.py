@@ -229,7 +229,12 @@ def form_field(context, field, widget=None, **kwargs):
             for k, v in field_data['choices']
         ]
         # Normalize the value [django.forms.widgets.Select.render_options]
-        field_data['value'] = force_text(field_data['value']())
+        value = field_data['value']
+        field_data['value'] = (
+            map(force_text, value)
+            if isinstance(value, (list, tuple))
+            else force_text(field_data['value']())
+        )
 
     # Allow supplied values to override field data
     field_data.update(kwargs)
