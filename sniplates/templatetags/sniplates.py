@@ -232,7 +232,7 @@ def form_field(context, field, widget=None, **kwargs):
         value = field_data['value']
         if value is None:
             pass
-        elif ininstance(value, (list, tuple)):
+        elif isinstance(value, (list, tuple)):
             value = map(force_text, value)
         else:
             value = force_text(field_data['value']())
