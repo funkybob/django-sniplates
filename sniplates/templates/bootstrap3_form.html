@@ -1,0 +1,117 @@
+{% load sniplates %}
+
+{% block label %}
+    {% if label %}
+        <label id="{{ id_for_label }}" for="{{ id }}">{{ label }}</label>
+    {% endif %}
+{% endblock label %}
+
+{% block help %}
+    <p class="help-block">{{ help_text }}</p>
+{% endblock help %}
+
+{% block errors %}
+    {% if errors %}
+        <ul class="errorlist">
+            {% for error in errors %}
+                <li class="error">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block input %}
+    <div class="form-group {{ errors|yesno:'has-error,' }}">
+        {% widget 'bs3form:label' %}
+        <input
+            type="{{ field_type|default:'text' }}"
+            name="{{ html_name }}"
+            id="{{ id }}"
+            value="{{ value|default:'' }}"
+            class="form-control {{ css_classes }}"
+            {{ required|yesno:'required,' }}
+            {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+            {{ widget.attrs|flatattrs }}
+        >
+        {% widget 'bs3form:help' %}
+        {% widget 'bs3form:errors' %}
+    </div>
+{% endblock input %}
+
+{% block textarea %}
+    {% widget 'bs3form:label' %}
+        <textarea
+            name="{{ html_name }}"
+            id="{{ id }}"
+            class="form-control {{ css_classes }}
+                {{ errors|yesno:'has-error,' }}"
+            {{ required|yesno:'required,' }}
+            {{ autofocus|yesno:'autofocus,' }}
+            {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+            {{ widget.attrs|flatattrs }}
+        >{{ value|default:'' }}</textarea>
+    {% widget 'bs3form:help' %}
+    {% widget 'bs3form:errors' %}
+{% endblock %}
+
+{% block checkbox %}
+    <div class="form-group {{ errors|yesno:'has-error,' }}">
+        <div class="checkbox{% if inline %}-inline{% endif %}">
+            <label id="{{ id_for_label }}" for="{{ id }}">
+                <input
+                    class="{{ css_classes }}"
+                    type="checkbox"
+                    name="{{ html_name }}"
+                    id="{{ id }}"
+                    {{ required|yesno:'required,' }}
+                    {{ widget.attrs|flatattrs }}
+                >
+                {{ label }}
+            </label>
+            {% widget 'bs3form:help' %}
+            {% widget 'bs3form:errors' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block radio %}
+    <div class="form-group {{ errors|yesno:'has-error,' }}">
+        {% for choice in choices %}
+            <div class="radio">
+                <label for="{{ id }}_{{ forloop.counter0 }}">
+                    <input
+                        class="{{ css_classes }}"
+                        type="radio"
+                        name="{{ html_name }}"
+                        id="{{ id }}_{{ forloop.counter0 }}"
+                        value="{{ choice.0 }}"
+                        {{ required|yesno:'required,' }}
+                        {{ widget.attrs|flatattrs }}
+                    >
+                    {{ choice.1 }}
+                </label>
+                {% widget 'bs3form:help' %}
+                {% widget 'bs3form:errors' %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block select %}
+    <div class="form-group">
+        {% widget 'bs3form:label' %}
+        <select
+            {% if multiple %}multiple{% endif %}
+            class="form-control {{ css_classes }}"
+            name="{{ html_name }}"
+            id="{{ id }}"
+            {{ required|yesno:'required,' }}
+            {{ widget.attrs|flatattrs }}
+        >
+            {% if not required %}<option value="">---------</option>{% endif %}
+            {% for choice in choices %}
+                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+{% endblock %}
