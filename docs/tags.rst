@@ -37,7 +37,7 @@ The `form_field` tag
 
 .. code-block:: django
 
-    {% form_field form.fieldname [widget=] [alias=] .... %}
+    {% form_field form.fieldname [widget=] [alias=form] .... %}
 
 .. note::
 
