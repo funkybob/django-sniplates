@@ -1,0 +1,165 @@
+{% load sniplates %}
+Default, basic form rendering
+
+# Built in fields:
+
+    'CharField',
+    'IntegerField',
+    'DateField',
+    'TimeField',
+    'DateTimeField',
+    'TimeField',
+    'RegexField',
+    'EmailField',
+    'FileField',
+    'ImageField',
+    'URLField',
+    'BooleanField',
+    'NullBooleanField',
+    'ChoiceField',
+    'MultipleChoiceField',
+    'ComboField',
+    'MultiValueField',
+    'FloatField',
+    'DecimalField',
+    'SplitDateTimeField',
+    'IPAddressField',
+    'GenericIPAddressField',
+    'FilePathField',
+    'SlugField',
+    'TypedChoiceField',
+    'TypedMultipleChoiceField'
+
+# Built in widgets:
+
+    'TextInput',
+    'EmailInput',
+    'URLInput',
+    'NumberInput',
+    'PasswordInput',
+    'HiddenInput',
+    'MultipleHiddenInput',
+    'ClearableFileInput',
+    'FileInput',
+    'DateInput',
+    'DateTimeInput',
+    'TimeInput',
+    'Textarea',
+    'CheckboxInput',
+    'Select',
+    'NullBooleanSelect',
+    'SelectMultiple',
+    'RadioSelect',
+    'CheckboxSelectMultiple',
+    'SplitDateTimeWidget',
+    'SplitHiddenDateTimeWidget',
+
+How to render labels
+{% block _label %}
+{% if label %}<label id="{{ id_for_label }}" for="{{ id }}">{{ label }}</label>{% endif %}
+{% endblock %}
+
+How to render help_text
+{% block _help %}
+{{ help_text }}
+{% endblock %}
+
+How to render errors
+{% block _errors %}
+{% if errors %}
+<ul class="errorlist">
+{% for error in errors %}
+    <li class="error">{{ error }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block input %}
+{% with input_type=input_type|default:"text" %}
+<input type="{{ input_type }}"
+    name="{{ html_name }}"
+    id="{{ id }}"
+    value="{{ value|default:"" }}"
+    class="{{ css_classes }} {{ errors|yesno:"error," }}"
+    {{ widget.attrs|flat_attrs }}
+    {{ required|yesno:"required," }}
+    {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+>
+{% endwith %}
+{% endblock %}
+
+{% block TextInput %}{% reuse "input" %}{% endblock %}
+{% block EmailInput %}{% reuse "input" input_type="email" %}{% endblock %}
+{% block NumberInput %}{% reuse "input" input_type="number" %}{% endblock %}
+{% block URLInput %}{% reuse "input" input_type="url" %}{% endblock %}
+{% block PasswordInput %}{% reuse "input" input_type="password" value="" %}{% endblock %}
+{% block HiddenInput %}{% reuse "input" input_type="hidden" label="" %}{% endblock %}
+{% block FileInput %}{% reuse "input" input_type="file" value="" %}{% endblock %}
+{% block DateInput %}{% reuse "input" input_type="date" value=value|date:'Y-m-d' %}{% endblock %}
+{% block DateTimeInput %}{% reuse "input" input_type="datetime" value=value|date:'Y-m-d H:i:s' %}{% endblock %}
+{% block TimeInput %}{% reuse "input" input_type="time" value=value|date:'H:i:s' %}{% endblock %}
+
+TODO:
+
+{% block ClearableFileInput %}{% endblock %}
+{% block SplitDateTimeWidget %}{% endblock %}
+{% block SplitHiddenDateTimeWidget %}{% endblock %}
+
+Fields not derived from InputField:
+
+{% block MultipleHiddenInput %}
+{% for value in value %}
+<input type="hidden" name="{{ name }}" id="{{ id }}_{{ forloop.counter0 }}" value="{{ value|default:'' }}" {{ widget.attrs|flat_attrs }} {{ required|yesno:"required," }}>
+{% endfor %}
+{% endblock %}
+
+{% block Textarea %}
+<textarea name="{{ html_name }}" id="{{ id }}"
+    class="{{ css_classes }} {{ errors|yesno:"error," }}"
+    {{ required|yesno:"required," }}
+    {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+    {{ widget.attrs|flat_attrs }}
+>{{ value|default:'' }}</textarea>
+{% endblock %}
+
+{% block Select %}
+<select name="{{ html_name }}" id="{{ id }}" {{ widget.attrs|flat_attrs }}>
+{% for val, display in choices %}
+    <option value="{{ val }}" {% if val == value|default:None %}selected{% endif %}>{{ display }}</option>
+{% endfor %}
+</select>
+{% endblock %}
+
+{% block SelectMultiple %}
+<select name="{{ html_name }}" id="{{ id }}" {{ widget.attrs|flat_attrs }} multiple>
+{% for val, display in choices %}
+    <option value="{{ val }}" {% if val in value %}selected{% endif %}>{{ display }}</option>
+{% endfor %}
+</select>
+{% endblock %}
+{% block NullBooleanSelect %}{% reuse "Select" %}{% endblock %}
+
+Checkbox is a special case and needs its own template.
+{% block CheckboxInput %}
+<label for="{{ form_field.id_for_label }}" class="{{ css_classes }}">
+    <input name="{{ html_name }}" id="{{ id }}" type="checkbox" {{ form_field.value|yesno:'checked,' }}>
+    {{ form_field.label }}
+</label>
+{% endblock %}
+
+{% block RadioSelect %}
+<ul id="{{ id }}">
+{% for val, display in choices %}
+    <li><input type="radio" id="{{ id}}_{{ forloop.counter0 }}" value="{{ val }}" {% if val == value|default:"" %}checked{% endif %}>{{ display }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block CheckboxSelectMultiple %}
+<ul id="{{ id }}">
+{% for val, display in choices %}
+    <li><input type="checkbox" id="{{ id}}_{{ forloop.counter0 }}" value="{{ val }}" {% if val in value %}checked{% endif %}>{{ display }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
