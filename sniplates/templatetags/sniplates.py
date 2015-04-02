@@ -113,6 +113,7 @@ def load_widgets(context, **kwargs):
     '''
     Load a series of widget libraries.
     '''
+    _soft = kwargs.pop('_soft', False)
 
     try:
         widgets = context.render_context[WIDGET_CONTEXT_KEY]
@@ -120,6 +121,8 @@ def load_widgets(context, **kwargs):
         widgets = context.render_context[WIDGET_CONTEXT_KEY] = {}
 
     for alias, template_name in kwargs.items():
+        if _soft and alias in widgets:
+            continue
         # Build an isolated render context each time
         safe_context = copy(context)
         safe_context.render_context = safe_context.render_context.new({
@@ -270,6 +273,21 @@ def auto_widget(field):
         )
     ]
 
+
+@register.simpletag
+def show_form(form, normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
+    normal_row = lookup_block(normal_row)
+    error_row = lookup_block(error_row)
+    help_text = lookup_block(help_text)
+
+    for name, field in form.fields.items():
+        bf = form[name]
+
+        if bs.is_hidden:
+            pass
+        else:
+            
+    return ''
 
 @register.filter
 def flatattrs(attrs):

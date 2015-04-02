@@ -16,6 +16,10 @@ than one library, either at a time, or in separate tags.  Because the widgets
 are stored in the render context, not the context, they are available in child
 templates even when defined in an inherited template.
 
+If you pass `_soft=True` any alias that already exists will be skipped.  This
+can be helpful to allow templates to ensure they have the widget sets they need
+without causing duplicate loads.
+
 
 The `widget` tag
 ================
