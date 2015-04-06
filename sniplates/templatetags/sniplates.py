@@ -1,11 +1,8 @@
 
 from copy import copy
 
-try:
-    from django.forms.utils import flatatt
-except ImportError:  # Django 1.5 compatibility
-    from django.forms.util import flatatt
-from django import template
+from django.forms.utils import flatatt
+from django import template, VERSION
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
@@ -45,6 +42,9 @@ def resolve_blocks(template, context):
     # If it's just the name, resolve into template
     if isinstance(template, six.string_types):
         template = get_template(template)
+
+    # For Django 1.8 compatibility
+    template = getattr(template, 'template', template)
 
     # Add this templates blocks as the first
     local_blocks = dict(
