@@ -1,0 +1,2 @@
+{% block CharField %}<input type="dummy" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}
+{% block password %}<input type="password" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}

@@ -1,0 +1,4 @@
+{% block CharField %}<input type="text" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}
+{% block ChoiceField %}<select name="{{ html_name }}" data-choices="{{ choices }}">{% for val, display in choices %}
+    <option value="{{ val }}">{{ display }}</option>{% endfor %}
+</select>{% endblock %}

@@ -1,28 +1,16 @@
 
 from django.template.loader import get_template
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 
 from .forms import TestForm
-from .utils import TemplateTestMixin
+from .utils import TemplateTestMixin, template_path
 
 
+@override_settings(
+    TEMPLATE_DIRS=[template_path('field_tag'),],
+)
 class TestFieldTag(TemplateTestMixin, SimpleTestCase):
-    TEMPLATES = {
-        'widgets': '''
-            {% block CharField %}<input type="text" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}
-            {% block ChoiceField %}<select name="{{ html_name }}" data-choices="{{ choices }}">{% for val, display in choices %}
-                <option value="{{ val }}">{{ display }}</option>{% endfor %}
-            </select>{% endblock %}
-        ''',
-        'widget2': '''
-            {% block CharField %}<input type="dummy" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}
-            {% block password %}<input type="password" name="{{ html_name }}" value="{{ value|default:'' }}>{% endblock %}
-        ''',
-        'field': '''{% load sniplates %}{% load_widgets form="widgets" %}{% form_field form.char %}''',
-        'choices': '''{% load sniplates %}{% load_widgets form="widgets" %}{% form_field form.oneof %}''',
-        'override': '''{% load sniplates %}{% load_widgets form="widgets" other="widget2" %}{% form_field form.char widget="other:password" %}''',
-        'override2': '''{% load sniplates %}{% load_widgets form="widgets" other="widget2" %}{% form_field form.char alias="other" %}''',
-    }
+
     def setUp(self):
         super(TestFieldTag, self).setUp()
         self.ctx['form'] = TestForm()

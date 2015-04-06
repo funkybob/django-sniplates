@@ -1,0 +1,1 @@
+{% load sniplates %}{% load_widgets foo='simple.html' %}{% widget 'bar:no_lib' %}

@@ -1,47 +1,39 @@
 
 from django.template import TemplateSyntaxError
 from django.template.loader import get_template
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 
-from .utils import TemplateTestMixin
+from .utils import TemplateTestMixin, template_path
 
 
+@override_settings(
+    TEMPLATE_DIRS=[template_path('load_widgets')],
+)
 class TestLoadWidgets(TemplateTestMixin, SimpleTestCase):
-    TEMPLATES = {
-        'simple.html': '''{% block simple %}success{% endblock %}''',
-        'other.html': '''{% block other %}winning{% endblock %}''',
-        'load_widgets': '''{% load sniplates %}{% load_widgets foo='simple.html' %}{% widget "foo:simple" %}''',
-        'load_widgets_two': '''{% load sniplates %}{% load_widgets foo='simple.html' bar='other.html' %}{% widget 'foo:simple' %}<=>{% widget 'bar:other' %}''',
-        'load_widgets_three': '''{% load sniplates %}{% load_widgets foo='simple.html' %}{% load_widgets bar='other.html' %}{% widget 'foo:simple' %}<=>{% widget 'bar:other' %}''',
-    }
 
     def test_load_widgets(self):
         tmpl = get_template('load_widgets')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'success')
+        self.assertEqual(output, 'success\n')
 
     def test_load_widgets_two(self):
         tmpl = get_template('load_widgets_two')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'success<=>winning')
+        self.assertEqual(output, 'success<=>winning\n')
 
     def test_load_widgets_three(self):
         tmpl = get_template('load_widgets_three')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'success<=>winning')
+        self.assertEqual(output, 'success<=>winning\n')
 
 
+@override_settings(
+    TEMPLATE_DIRS=[template_path('invalid')],
+)
 class TestInvalid(TemplateTestMixin, SimpleTestCase):
-    TEMPLATES = {
-        'simple.html': '''{% block simple %}success{% endblock %}''',
-        'bad_name': ''' {% load sniplates %}{% widget 'boo-bar' %}''',
-        'not_loaded': '''{% load sniplates %}{% widget 'foo:bar' %}''',
-        'no_lib': '''{% load sniplates %}{% load_widgets foo='simple.html' %}{% widget 'bar:no_lib' %}''',
-        'no_widget': '''{% load sniplates %}{% load_widgets foo='simple.html' %}{% widget "foo:no_widget" %}''',
-    }
 
     def test_bad_name(self):
         tmpl = get_template('bad_name')
@@ -64,55 +56,34 @@ class TestInvalid(TemplateTestMixin, SimpleTestCase):
             tmpl.render(self.ctx)
 
 
+@override_settings(
+    TEMPLATE_DIRS=[template_path('widget_tag')],
+)
 class TestWidgetTag(TemplateTestMixin, SimpleTestCase):
-    TEMPLATES = {
-        'widgets.one': '''
-{% block fixed %}fixed{% endblock %}
-{% block var %}{{ var }}{% endblock %}
-{% block default %}{{ var|default:'default' }}{% endblock %}
-        ''',
-        'widgets.two': '''
-{% extends 'widgets.one' %}
-{% block var %}more {{ var }}{% endblock %}
-        ''',
-
-        'fixed': '''{% load sniplates %}{% load_widgets foo='widgets.one' %}{% widget 'foo:fixed' %}''',
-        'var': '''{% load sniplates %}{% load_widgets foo='widgets.one' %}{% widget 'foo:var' var='value' %}''',
-        'inherit': '''{% load sniplates %}{% load_widgets foo='widgets.two' %}{% widget 'foo:var' var='value' %}''',
-    }
 
     def test_fixed(self):
         tmpl = get_template('fixed')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'fixed')
+        self.assertEqual(output, 'fixed\n')
 
     def test_var(self):
         tmpl = get_template('var')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'value')
+        self.assertEqual(output, 'value\n')
 
     def test_inherit(self):
         tmpl = get_template('inherit')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'more value')
+        self.assertEqual(output, 'more value\n')
 
 
+@override_settings(
+    TEMPLATE_DIRS=[template_path('inheritance')],
+)
 class TestInheritance(TemplateTestMixin, SimpleTestCase):
-    TEMPLATES = {
-        'base': '''DOCUMENT {% block content %}{% endblock %}''',
-        'block_overlap_widgets': '''{% block foo %}foo{% endblock %}''',
-        'block_overlap': '''{% extends 'base' %}{% load sniplates %}{% load_widgets foo='block_overlap_widgets' %}{% block content %}content {% widget 'foo:bar' %}{% endblock %}{% block bar %}bar{% endblock %}''',
-
-        'parent_inherit': '''{% extends 'parent_inherit_base' %}{% load sniplates %}{% block content %}{% widget 'foo:test' %}{% endblock %}''',
-        'parent_inherit_base': '''{% load sniplates %}{% load_widgets foo='parent_inherit_widgets' %}{% block content %}{% endblock %}''',
-        'parent_inherit_widgets': '''{% block test %}foo{% endblock %}''',
-
-        'parent_overlap': '''{% load sniplates %}{% load_widgets foo='parent_overlap_widgets' %}{% block main %}first{% endblock%}''',
-        'parent_overlap_widgets': '''{% block main %}second{% endblock %}''',
-     }
 
     def test_block_overlap(self):
         '''
@@ -132,7 +103,7 @@ class TestInheritance(TemplateTestMixin, SimpleTestCase):
         tmpl = get_template('parent_inherit')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'foo')
+        self.assertEqual(output, 'foo\n')
 
     def test_parent_overlap(self):
         '''
@@ -142,4 +113,4 @@ class TestInheritance(TemplateTestMixin, SimpleTestCase):
         tmpl = get_template('parent_overlap')
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, 'first')
+        self.assertEqual(output, 'first\n')

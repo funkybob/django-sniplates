@@ -1,0 +1,1 @@
+{% load sniplates %}{% load_widgets foo='parent_inherit_widgets' %}{% block content %}{% endblock %}

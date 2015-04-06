@@ -1,0 +1,1 @@
+{% load sniplates %}{% load_widgets foo='simple.html' %}{% load_widgets bar='other.html' %}{% widget 'foo:simple' %}<=>{% widget 'bar:other' %}

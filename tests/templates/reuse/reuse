@@ -1,0 +1,1 @@
+{% extends 'base' %}{% load sniplates %}{% block true %}true{% endblock %}{% block main %}{% reuse 'true' %}{% endblock %}

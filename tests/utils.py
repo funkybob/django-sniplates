@@ -1,17 +1,15 @@
+import os
 
 from django.template import Context
-from django.test.utils import setup_test_template_loader, restore_template_loaders
+
+HERE = os.path.dirname(__file__)
+
+
+def template_path(path):
+    return os.path.join(HERE, 'templates', path, '')
+
 
 class TemplateTestMixin(object):
-    TEMPLATES = {}
-
-    @classmethod
-    def setUpClass(cls):
-        setup_test_template_loader(cls.TEMPLATES)
-
-    @classmethod
-    def tearDownClass(cls):
-        restore_template_loaders()
 
     def setUp(self):
         self.ctx = Context()

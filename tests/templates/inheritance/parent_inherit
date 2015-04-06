@@ -1,0 +1,1 @@
+{% extends 'parent_inherit_base' %}{% load sniplates %}{% block content %}{% widget 'foo:test' %}{% endblock %}

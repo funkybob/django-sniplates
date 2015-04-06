@@ -1,0 +1,1 @@
+{% load sniplates %}{% load_widgets form="widgets" other="widget2" %}{% form_field form.char widget="other:password" %}

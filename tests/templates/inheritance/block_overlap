@@ -1,0 +1,1 @@
+{% extends 'base' %}{% load sniplates %}{% load_widgets foo='block_overlap_widgets' %}{% block content %}content {% widget 'foo:bar' %}{% endblock %}{% block bar %}bar{% endblock %}
