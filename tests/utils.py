@@ -1,6 +1,10 @@
 import os
 
 from django.template import Context
+try:
+    from django.test import override_settings
+except ImportErrror:  # 1.4 Compatibility
+    from django.test.utils import override_settings
 
 HERE = os.path.dirname(__file__)
 

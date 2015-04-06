@@ -1,9 +1,9 @@
 
 from django.template.loader import get_template
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 
 from .forms import TestForm
-from .utils import TemplateTestMixin, template_path
+from .utils import TemplateTestMixin, template_path, override_settings
 
 
 @override_settings(
