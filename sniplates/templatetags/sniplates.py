@@ -274,7 +274,7 @@ def auto_widget(field):
     ]
 
 
-@register.simpletag
+@register.simple_tag
 def show_form(form, normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
     normal_row = lookup_block(normal_row)
     error_row = lookup_block(error_row)
