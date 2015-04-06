@@ -46,6 +46,9 @@ def resolve_blocks(template, context):
     if isinstance(template, six.string_types):
         template = get_template(template)
 
+    if hasattr(template, 'template'):
+        template = template.template
+
     # Add this templates blocks as the first
     local_blocks = dict(
         (block.name, block)
