@@ -286,7 +286,7 @@ def show_form(form, normal_row='normal_row', error_row='error_row', help_text='h
         if bs.is_hidden:
             pass
         else:
-            
+            pass
     return ''
 
 @register.filter
