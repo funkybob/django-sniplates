@@ -7,7 +7,7 @@ from .utils import TemplateTestMixin, template_path, override_settings
 
 
 @override_settings(
-    TEMPLATE_DIRS=[template_path('field_tag'),],
+    TEMPLATE_DIRS=[template_path('field_tag')],
 )
 class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
@@ -20,7 +20,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         Make sure the field tag is usable.
         '''
         tmpl = get_template('field')
-        output = tmpl.render(self.ctx)
+        tmpl.render(self.ctx)
 
     def test_choices_field(self):
         tmpl = get_template('choices')
@@ -33,7 +33,6 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertTrue('type="password"' in output)
-
 
     def test_widget_override2(self):
         tmpl = get_template('override2')

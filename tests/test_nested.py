@@ -18,11 +18,11 @@ class TestNestedTag(TemplateTestMixin, SimpleTestCase):
 
     def test_invalid_noarg(self):
         with self.assertRaises(TemplateSyntaxError):
-            tmpl = get_template('invalid')
+            get_template('invalid')
 
     def test_invalid_twoarg(self):
         with self.assertRaises(TemplateSyntaxError):
-            tmpl = get_template('invalid2')
+            get_template('invalid2')
 
     def test_empty_nest(self):
         tmpl = get_template('empty')
@@ -35,4 +35,3 @@ class TestNestedTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, '<fieldset><caption>Caption</caption>content goes here</fieldset>\n')
-
