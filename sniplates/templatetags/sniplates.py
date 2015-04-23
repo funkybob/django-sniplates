@@ -312,7 +312,7 @@ def reuse(context, block_list, **kwargs):
     try:
         block_context = context.render_context[BLOCK_CONTEXT_KEY]
     except KeyError:
-        block_context = context.render_context[BLOCK_CONTEXT_KEY] = BlockContext()
+        block_context = BlockContext()
         blocks = {n.name: n for n in context.template.nodelist.get_nodes_by_type(BlockNode)}
         block_context.add_blocks(blocks)
 
