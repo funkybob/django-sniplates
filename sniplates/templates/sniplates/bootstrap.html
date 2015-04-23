@@ -1,0 +1,43 @@
+{% block textbox %}
+<div class="form-group">
+    {% if col1 %}
+    <div class="col-{{col_type|default:"md"}}-{{col1}}">
+    {% endif %}
+        <label for="id_{{ field.name }}">{{ field.label }}</label>
+    {% if col1 %}
+    </div>
+    {% endif %}
+    {% if col2 %}
+    <div class="col-{{ col_type|default:"md"}}-{{col2}}">
+    {% endif %}
+        <input class="form-control" value="{{ value|default:field.value }}">
+    {% if col2 %}
+    </div>
+    {% endif %} 
+</div>
+{% endblock %}
+
+{% block linkbutton %}
+<a class="btn {% if btn_type %}btn-{{ btn_type }}{%else%}btn-default{%endif%}" href="{{ href }}">{{ label }}</a>
+{% endblock %}
+
+{% block select %}
+{% if col1 %}
+<div class="col-{{col_type|default:"md"}}-{{col1}}">
+{% endif %}
+    <label for="id_{{ field.name }}">{{ field.label }}</label>
+{% if col1 %}
+</div>
+{% endif %}
+{% if col2 %}
+<div class="col-{{col_type|default:"md"}}-{{col2}}">
+{% endif %}
+    <select id="id_{{ field.name }}" name="{{ field.name }}" class="form-control">
+        {% for x,y in field.field.choices %}
+        <option value="{{ x }}" {% if field.value == x %} selected {% endif %}>{{ y }}</option>
+        {% endfor %}
+    </select>
+{% if col2 %}
+</div>
+{% endif %}
+{% endblock %}
