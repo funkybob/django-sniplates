@@ -5,6 +5,10 @@ Changelog
 0.2.2
 -----
 
+Features:
+
+- {% reuse %} no longer requires {% extends %}
+
 Bugs fixed:
 
 - Fix forcing multi-value fields to unicode in form tag

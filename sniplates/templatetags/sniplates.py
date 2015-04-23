@@ -275,10 +275,13 @@ def auto_widget(field):
 
 
 @register.simple_tag
-def show_form(form, normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
-    normal_row = lookup_block(normal_row)
-    error_row = lookup_block(error_row)
-    help_text = lookup_block(help_text)
+def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
+    normal_row = lookup_block(alias, normal_row)
+    error_row = lookup_block(alias, error_row)
+    help_text = lookup_block(alias, help_text)
+
+    # Errors from non-field and hidden fields.
+    top_errors = form.non_field_errors()
 
     for name, field in form.fields.items():
         bf = form[name]
@@ -288,6 +291,7 @@ def show_form(form, normal_row='normal_row', error_row='error_row', help_text='h
         else:
             pass
     return ''
+
 
 @register.filter
 def flatattrs(attrs):
@@ -305,7 +309,12 @@ def reuse(context, block_list, **kwargs):
 
     {% reuse list_of_block_names .... %}
     '''
-    block_context = context.render_context[BLOCK_CONTEXT_KEY]
+    try:
+        block_context = context.render_context[BLOCK_CONTEXT_KEY]
+    except KeyError:
+        block_context = context.render_context[BLOCK_CONTEXT_KEY] = BlockContext()
+        blocks = {n.name: n for n in context.template.nodelist.get_nodes_by_type(BlockNode)}
+        block_context.add_blocks(blocks)
 
     if not isinstance(block_list, (list, tuple)):
         block_list = [block_list]
