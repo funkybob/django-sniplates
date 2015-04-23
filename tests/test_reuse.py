@@ -15,3 +15,16 @@ class TestReuse(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, 'true\n')
+
+    def test_simple(self):
+        '''
+        Widget templates want to reuse their own blocks.
+        '''
+        tmpl = get_template('simple')
+        output = tmpl.render(self.ctx)
+
+        self.assertEqual(output, '\n\ntrue\n\ntrue\n')
+
+    def test_reuse_in_widget(self):
+        tmpl = get_template('inwidget')
+        output = tmpl.render(self.ctx)

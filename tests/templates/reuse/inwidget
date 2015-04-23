@@ -1,0 +1,4 @@
+{% load sniplates %}
+{% load_widgets simple="simple" %}
+
+{% widget "simple:second" %}
