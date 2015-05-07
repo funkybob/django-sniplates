@@ -2,7 +2,7 @@
 from copy import copy
 
 from django.forms.utils import flatatt
-from django import template, VERSION
+from django import template
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
@@ -130,6 +130,7 @@ def load_widgets(context, **kwargs):
         })
         blocks = resolve_blocks(template_name, safe_context)
         widgets[alias] = blocks
+        widgets[template_name] = blocks
 
     return ''
 
@@ -286,7 +287,7 @@ def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row
     for name, field in form.fields.items():
         bf = form[name]
 
-        if bs.is_hidden:
+        if bf.is_hidden:
             pass
         else:
             pass
@@ -313,8 +314,6 @@ def reuse(context, block_list, **kwargs):
         block_context = context.render_context[BLOCK_CONTEXT_KEY]
     except KeyError:
         block_context = BlockContext()
-        blocks = {n.name: n for n in context.template.nodelist.get_nodes_by_type(BlockNode)}
-        block_context.add_blocks(blocks)
 
     if not isinstance(block_list, (list, tuple)):
         block_list = [block_list]
