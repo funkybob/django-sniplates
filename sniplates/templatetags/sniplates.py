@@ -286,7 +286,7 @@ def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row
     for name, field in form.fields.items():
         bf = form[name]
 
-        if bs.is_hidden:
+        if bf.is_hidden:
             pass
         else:
             pass
