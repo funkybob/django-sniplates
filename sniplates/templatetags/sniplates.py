@@ -1,7 +1,10 @@
 
 from copy import copy
 
-from django.forms.utils import flatatt
+try:
+    from django.forms.utils import flatatt
+except ImportError:  # django 1.4
+    from django.forms.util import flatatt
 from django import template, VERSION
 from django.template.base import token_kwargs
 from django.template.loader import get_template
@@ -286,7 +289,7 @@ def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row
     for name, field in form.fields.items():
         bf = form[name]
 
-        if bs.is_hidden:
+        if bf.is_hidden:
             pass
         else:
             pass
