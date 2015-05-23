@@ -78,39 +78,3 @@ class TestWidgetTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, 'more value\n')
-
-
-@override_settings(
-    TEMPLATE_DIRS=[template_path('inheritance')],
-)
-class TestInheritance(TemplateTestMixin, SimpleTestCase):
-
-    def test_block_overlap(self):
-        '''
-        Ensure that when we reference a block from a sniplate that doesn't
-        exist, but is in our template, it isn't used.
-        '''
-        tmpl = get_template('block_overlap')
-
-        with self.assertRaises(TemplateSyntaxError):
-            tmpl.render(self.ctx)
-
-    def test_parent_inherit(self):
-        '''
-        When our parent template loads sniplates, we should have access to them
-        also.
-        '''
-        tmpl = get_template('parent_inherit')
-        output = tmpl.render(self.ctx)
-
-        self.assertEqual(output, 'foo\n')
-
-    def test_parent_overlap(self):
-        '''
-        If a sniplate library has a block of the same name as in the calling
-        template, we should NOT override it.
-        '''
-        tmpl = get_template('parent_overlap')
-        output = tmpl.render(self.ctx)
-
-        self.assertEqual(output, 'first\n')
