@@ -1,6 +1,5 @@
 
 from contextlib import contextmanager
-from copy import copy
 
 from django.forms.utils import flatatt
 from django import template
