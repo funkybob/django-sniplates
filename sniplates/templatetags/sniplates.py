@@ -92,14 +92,14 @@ def using(context, alias):
         raise template.TemplateSyntaxError('No widget libraries loaded!')
 
     try:
-        block_set = widgest[alias]
+        block_set = widgets[alias]
     except KeyError:
         raise template.TemplateSyntaxError(
             'No widget library loaded for alias: %r' % alias
         )
 
     context.render_context.push()
-    context.render_context.[BLOCK_CONTEXT_KEY] = block_set
+    context.render_context[BLOCK_CONTEXT_KEY] = block_set
 
     yield context
 
@@ -117,7 +117,7 @@ def find_block(context, *names):
             return block
 
     raise template.TemplateSyntaxError(
-        'No widget found in %r for: %r' % (alias, names)
+        'No widget found for: %r' % (names,)
     )
 
 
@@ -318,7 +318,12 @@ def reuse(context, block_list, **kwargs):
     if not isinstance(block_list, (list, tuple)):
         block_list = [block_list]
 
-    block = find_block(context, *block_list)
+    for block in block_list:
+        block = block_context.get_block(block)
+        if block:
+            break
+    else:
+        return ''
 
     context.update(kwargs)
     try:
