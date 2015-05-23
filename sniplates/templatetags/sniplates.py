@@ -149,25 +149,73 @@ def load_widgets(context, **kwargs):
     return ''
 
 
-@register.simple_tag(takes_context=True)
-def widget(context, widget, **kwargs):
-    alias, block_name = parse_widget_name(widget)
+def pop_asvar(bits):
+    if len(bits) >= 2 and bits[-2] == 'as':
+        asvar = bits[-1]
+        del bits[-2:]
+        return asvar
 
-    with using(context, alias):
-        block = find_block(context, block_name)
 
-        context.update(kwargs)
-        try:
-            return block.render(context)
-        finally:
-            context.pop()
+class Widget(template.Node):
+    def __init__(self, widget, kwargs, asvar):
+        self.widget = widget
+        self.kwargs = kwargs
+        self.asvar = asvar
+
+    def render(self, context):
+        widget = self.widget.resolve(context)
+
+        alias, block_name = parse_widget_name(widget)
+
+        with using(context, alias):
+            block = find_block(context, block_name)
+
+            kwargs = {
+                key: val.resolve(context)
+                for key, val in self.kwargs.items()
+            }
+            context.update(kwargs)
+            try:
+                result = block.render(context)
+            finally:
+                context.pop()
+
+            if self.asvar:
+                context[self.asvar] = result
+                return ''
+
+            return result
+
+
+@register.tag
+def widget(parser, token):
+    bits = token.split_contents()
+    tag_name = bits.pop(0)
+
+    try:
+        widget = parser.compile_filter(bits.pop(0))
+    except IndexError:
+        raise template.TemplateSyntaxError(
+            '%s requires one positional argument' % tag_name
+        )
+
+    asvar = pop_asvar(bits)
+
+    kwargs = token_kwargs(bits, parser)
+    if bits:
+        raise template.TemplateSyntaxError(
+            '%s accepts only one positional argument' % tag_name
+        )
+
+    return Widget(widget, kwargs, asvar)
 
 
 class NestedWidget(template.Node):
-    def __init__(self, widget, nodelist, kwargs):
+    def __init__(self, widget, nodelist, kwargs, asvar):
         self.widget = widget
         self.nodelist = nodelist
         self.kwargs = kwargs
+        self.asvar = asvar
 
     def render(self, context):
         widget = self.widget.resolve(context)
@@ -186,11 +234,17 @@ class NestedWidget(template.Node):
                 content = self.nodelist.render(context)
                 try:
                     context.update({'content': content})
-                    return block.render(context)
+                    result = block.render(context)
                 finally:
                     context.pop()
             finally:
                 context.pop()
+
+            if self.asvar:
+                context[self.asvar] = result
+                return ''
+
+            return result
 
 
 @register.tag
@@ -205,7 +259,10 @@ def nested_widget(parser, token):
             '%s requires one positional argument' % tag_name
         )
 
+    asvar = pop_asvar(bits)
+
     kwargs = token_kwargs(bits, parser)
+
     if bits:
         raise template.TemplateSyntaxError(
             '%s accepts only one positional argument' % tag_name
@@ -214,7 +271,7 @@ def nested_widget(parser, token):
     nodelist = parser.parse(('endnested',))
     parser.delete_first_token()
 
-    return NestedWidget(widget, nodelist, kwargs)
+    return NestedWidget(widget, nodelist, kwargs, asvar)
 
 
 @register.simple_tag(takes_context=True)

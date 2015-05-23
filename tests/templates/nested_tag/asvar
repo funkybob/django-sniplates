@@ -1,0 +1,2 @@
+{% load sniplates %}{% load_widgets form="widgets" %}{% nested_widget "form:fieldset" caption="Caption" as asvar %}content goes here{% endnested %}
+BEFORE {{ asvar }}

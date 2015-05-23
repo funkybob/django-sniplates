@@ -79,6 +79,11 @@ class TestWidgetTag(TemplateTestMixin, SimpleTestCase):
 
         self.assertEqual(output, 'more value\n')
 
+    def test_asvar(self):
+        tmpl = get_template('asvar')
+        output = tmpl.render(self.ctx)
+        self.assertEqual(output, 'AFTER fixed')
+
 
 @override_settings(
     TEMPLATE_DIRS=[template_path('inheritance')],

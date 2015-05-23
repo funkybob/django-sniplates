@@ -35,3 +35,9 @@ class TestNestedTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, '<fieldset><caption>Caption</caption>content goes here</fieldset>\n')
+
+    def test_asvar(self):
+        tmpl = get_template('asvar')
+        output = tmpl.render(self.ctx)
+
+        self.assertEqual(output, '\nBEFORE <fieldset><caption>Caption</caption>content goes here</fieldset>\n')
