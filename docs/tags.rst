@@ -130,6 +130,8 @@ define reusable "macro" blocks, without having to load a separate widget set.
 
 As with other tags, you can extend the context by passing keyword arguments.
 
+.. note:: This tag only works in templates that {% extends %} another template.
+
 The `flatattrs` filter
 =======================
 
