@@ -1,5 +1,3 @@
 {% load sniplates %}
-
 {% block first %}true{% endblock %}
-
 {% block second %}{% reuse "first" %}{% endblock %}

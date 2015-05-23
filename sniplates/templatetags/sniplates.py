@@ -1,5 +1,5 @@
 
-from copy import copy
+from contextlib import contextmanager
 
 from django.forms.utils import flatatt
 from django import template
@@ -80,17 +80,15 @@ def parse_widget_name(widget):
     return alias, block_name
 
 
-def lookup_block(context, alias, *names):
+@contextmanager
+def using(context, alias):
     '''
-    Find the first available block in a given alias set.
-
-    Samurai.
+    Temporarily update the context to use the BlockContext for the given alias.
     '''
-
     try:
         widgets = context.render_context[WIDGET_CONTEXT_KEY]
     except KeyError:
-        raise template.TemplateSyntaxError("No widget libraries loaded!")
+        raise template.TemplateSyntaxError('No widget libraries loaded!')
 
     try:
         block_set = widgets[alias]
@@ -99,12 +97,26 @@ def lookup_block(context, alias, *names):
             'No widget library loaded for alias: %r' % alias
         )
 
+    context.render_context.push()
+    context.render_context[BLOCK_CONTEXT_KEY] = block_set
+
+    yield context
+
+    context.render_context.pop()
+
+
+def find_block(context, *names):
+    '''
+    Find the first matching block in the current block_context
+    '''
+    block_set = context.render_context[BLOCK_CONTEXT_KEY]
     for name in names:
         block = block_set.get_block(name)
         if block is not None:
             return block
+
     raise template.TemplateSyntaxError(
-        'No widget found in %r for: %r' % (alias, names)
+        'No widget found for: %r' % (names,)
     )
 
 
@@ -123,14 +135,15 @@ def load_widgets(context, **kwargs):
     for alias, template_name in kwargs.items():
         if _soft and alias in widgets:
             continue
-        # Build an isolated render context each time
-        safe_context = copy(context)
-        safe_context.render_context = safe_context.render_context.new({
-            BLOCK_CONTEXT_KEY: BlockContext(),
-        })
-        blocks = resolve_blocks(template_name, safe_context)
-        widgets[alias] = blocks
-        widgets[template_name] = blocks
+
+        context.render_context.push()
+        context.render_context[BLOCK_CONTEXT_KEY] = BlockContext()
+
+        try:
+            blocks = resolve_blocks(template_name, context)
+            widgets[alias] = blocks
+        finally:
+            context.render_context.pop()
 
     return ''
 
@@ -139,13 +152,14 @@ def load_widgets(context, **kwargs):
 def widget(context, widget, **kwargs):
     alias, block_name = parse_widget_name(widget)
 
-    block = lookup_block(context, alias, block_name)
+    with using(context, alias):
+        block = find_block(context, block_name)
 
-    context.update(kwargs)
-    try:
-        return block.render(context)
-    finally:
-        context.pop()
+        context.update(kwargs)
+        try:
+            return block.render(context)
+        finally:
+            context.pop()
 
 
 class NestedWidget(template.Node):
@@ -159,22 +173,23 @@ class NestedWidget(template.Node):
 
         alias, block_name = parse_widget_name(widget)
 
-        block = lookup_block(context, alias, block_name)
+        with using(context, alias):
+            block = find_block(context, block_name)
 
-        kwargs = {
-            key: val.resolve(context)
-            for key, val in self.kwargs.items()
-        }
-        context.update(kwargs)
-        try:
-            content = self.nodelist.render(context)
+            kwargs = {
+                key: val.resolve(context)
+                for key, val in self.kwargs.items()
+            }
+            context.update(kwargs)
             try:
-                context.update({'content': content})
-                return block.render(context)
+                content = self.nodelist.render(context)
+                try:
+                    context.update({'content': content})
+                    return block.render(context)
+                finally:
+                    context.pop()
             finally:
                 context.pop()
-        finally:
-            context.pop()
 
 
 @register.tag
@@ -206,11 +221,11 @@ def form_field(context, field, widget=None, **kwargs):
     if widget is None:
         alias = kwargs.pop('alias', 'form')
 
-        block = lookup_block(context, alias, *auto_widget(field))
+        block_names = auto_widget(field)
     else:
         alias, block_name = parse_widget_name(widget)
 
-        block = lookup_block(context, alias, block_name)
+        block_names = [block_name]
 
     field_data = {
         'form_field': field,
@@ -245,11 +260,14 @@ def form_field(context, field, widget=None, **kwargs):
     # Allow supplied values to override field data
     field_data.update(kwargs)
 
-    context.update(field_data)
-    try:
-        return block.render(context)
-    finally:
-        context.pop()
+    with using(context, alias):
+        block = find_block(context, *block_names)
+
+        context.update(field_data)
+        try:
+            return block.render(context)
+        finally:
+            context.pop()
 
 
 def auto_widget(field):
@@ -273,25 +291,6 @@ def auto_widget(field):
             '{field}',
         )
     ]
-
-
-@register.simple_tag
-def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
-    normal_row = lookup_block(alias, normal_row)
-    error_row = lookup_block(alias, error_row)
-    help_text = lookup_block(alias, help_text)
-
-    # Errors from non-field and hidden fields.
-    top_errors = form.non_field_errors()
-
-    for name, field in form.fields.items():
-        bf = form[name]
-
-        if bf.is_hidden:
-            pass
-        else:
-            pass
-    return ''
 
 
 @register.filter
@@ -318,12 +317,11 @@ def reuse(context, block_list, **kwargs):
     if not isinstance(block_list, (list, tuple)):
         block_list = [block_list]
 
-    for name in block_list:
-        block = block_context.get_block(name)
-        if block is not None:
+    for block in block_list:
+        block = block_context.get_block(block)
+        if block:
             break
-
-    if block is None:
+    else:
         return ''
 
     context.update(kwargs)

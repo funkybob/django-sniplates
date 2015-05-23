@@ -1,0 +1,1 @@
+{% load sniplates %}{% load_widgets w=widget_template %}{% widget "w:foo" %}
