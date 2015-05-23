@@ -33,7 +33,7 @@ def resolve_blocks(template, context):
     '''
     Return a BlockContext instance of all the {% block %} tags in the template.
 
-    If template is a string, it will be resovled through get_template
+    If template is a string, it will be resolved through get_template
     '''
     try:
         blocks = context.render_context[BLOCK_CONTEXT_KEY]
