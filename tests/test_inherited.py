@@ -42,14 +42,12 @@ class TestInheritance(TemplateTestMixin, SimpleTestCase):
 
     def test_block_super(self):
         tmpl = get_template('super')
-        self.ctx.push({'widget_template': "super_widget_inherit"})
+        self.ctx['widget_template'] = "super_widget_inherit"
         output = tmpl.render(self.ctx)
-        self.ctx.pop()
         self.assertEqual(output, 'EXTENDING BASE')
 
     def test_inherited_referenced_directly(self):
         tmpl = get_template('super')
-        self.ctx.push({'widget_template': "super_widget_base"})
+        self.ctx['widget_template'] = "super_widget_base"
         output = tmpl.render(self.ctx)
-        self.ctx.pop()
         self.assertEqual(output, 'BASE')

@@ -1,7 +1,10 @@
 
 from contextlib import contextmanager
 
-from django.forms.utils import flatatt
+try:
+    from django.forms.utils import flatatt
+except ImportError:  # django 1.4
+    from django.forms.util import flatatt
 from django import template
 from django.template.base import token_kwargs
 from django.template.loader import get_template
@@ -291,6 +294,25 @@ def auto_widget(field):
             '{field}',
         )
     ]
+
+
+@register.simple_tag
+def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
+    normal_row = lookup_block(alias, normal_row)
+    error_row = lookup_block(alias, error_row)
+    help_text = lookup_block(alias, help_text)
+
+    # Errors from non-field and hidden fields.
+    top_errors = form.non_field_errors()
+
+    for name, field in form.fields.items():
+        bf = form[name]
+
+        if bf.is_hidden:
+            pass
+        else:
+            pass
+    return ''
 
 
 @register.filter
