@@ -2,12 +2,22 @@
 Changelog
 =========
 
-0.2.2
+0.2.3
 -----
 
 Features:
 
-- {% reuse %} no longer requires {% extends %}
+- Reworked to no longer copy() the context - ever!
+- Now sets the right block context when rendering widgets so {{ block.super }} works.  Thanks Schinckel!
+- Added default Django widget template.
+- Added Django 1.8 compatibility.
+
+Other:
+
+- Removed testing for Django 1.5 and 1.6.
+
+0.2.2
+-----
 
 Bugs fixed:
 

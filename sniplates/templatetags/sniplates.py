@@ -1,8 +1,10 @@
 
 from contextlib import contextmanager
-from copy import copy
 
-from django.forms.utils import flatatt
+try:
+    from django.forms.utils import flatatt
+except ImportError:  # django 1.4
+    from django.forms.util import flatatt
 from django import template
 from django.template.base import token_kwargs
 from django.template.loader import get_template
@@ -86,24 +88,29 @@ def using(context, alias):
     '''
     Temporarily update the context to use the BlockContext for the given alias.
     '''
-    try:
-        widgets = context.render_context[WIDGET_CONTEXT_KEY]
-    except KeyError:
-        raise template.TemplateSyntaxError('No widget libraries loaded!')
 
-    try:
-        block_set = widgets[alias]
-    except KeyError:
-        raise template.TemplateSyntaxError(
-            'No widget library loaded for alias: %r' % alias
-        )
+    # An empty alias means look in the current widget set.
+    if alias == '':
+        yield context
+    else:
+        try:
+            widgets = context.render_context[WIDGET_CONTEXT_KEY]
+        except KeyError:
+            raise template.TemplateSyntaxError('No widget libraries loaded!')
 
-    context.render_context.push()
-    context.render_context[BLOCK_CONTEXT_KEY] = block_set
+        try:
+            block_set = widgets[alias]
+        except KeyError:
+            raise template.TemplateSyntaxError(
+                'No widget library loaded for alias: %r' % alias
+            )
 
-    yield context
+        context.render_context.push()
+        context.render_context[BLOCK_CONTEXT_KEY] = block_set
 
-    context.render_context.pop()
+        yield context
+
+        context.render_context.pop()
 
 
 def find_block(context, *names):
@@ -349,6 +356,25 @@ def auto_widget(field):
             '{field}',
         )
     ]
+
+
+@register.simple_tag
+def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
+    normal_row = lookup_block(alias, normal_row)
+    error_row = lookup_block(alias, error_row)
+    help_text = lookup_block(alias, help_text)
+
+    # Errors from non-field and hidden fields.
+    top_errors = form.non_field_errors()
+
+    for name, field in form.fields.items():
+        bf = form[name]
+
+        if bf.is_hidden:
+            pass
+        else:
+            pass
+    return ''
 
 
 @register.filter
