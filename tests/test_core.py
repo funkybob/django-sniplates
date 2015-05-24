@@ -79,6 +79,12 @@ class TestWidgetTag(TemplateTestMixin, SimpleTestCase):
 
         self.assertEqual(output, 'more value\n')
 
+    def test_asvar(self):
+        tmpl = get_template('asvar')
+        output = tmpl.render(self.ctx)
+
+        self.assertEqual(output, 'AFTER fixed')
+
     def test_empty_alias_reference(self):
         tmpl = get_template('alias_self')
         output = tmpl.render(self.ctx)

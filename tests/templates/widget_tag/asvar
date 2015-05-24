@@ -1,0 +1,1 @@
+{% load sniplates %}{% load_widgets foo='widgets.1' %}{% widget 'foo:fixed' as asvar %}AFTER {{ asvar }}

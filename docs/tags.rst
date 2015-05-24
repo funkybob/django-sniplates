@@ -26,7 +26,7 @@ The `widget` tag
 
 .. code-block:: django
 
-   {% widget 'alias:block_name' .... %}
+   {% widget 'alias:block_name' ...  [as asvar] %}
 
 Renders the specified widget with the current context.  You can provide extra
 values to override, just like with `{% include %}`.  Currently does not support
@@ -36,6 +36,9 @@ The name is composed of the alias specified in the `load_widgets` tag, and the
 name of the block in that template, joined with a ':'. If you use an "empty" alias,
 the block will be searched for in the current template (and any templates it extends).
 This form can be used without a `load_widgets` tage.
+
+You may use the `as` form of the tag to store the result of the block in the
+context variable you supply instead of rendering it in the template.
 
 
 The `form_field` tag
@@ -101,7 +104,7 @@ The `nested_widget` tag
 
 .. code-block:: django
 
-   {% nested_widget widgetname .... %}
+   {% nested_widget widgetname .... [as asvar] %}
        ...
    {% endnested %}
 
@@ -116,6 +119,9 @@ An example use of this is for wrapping fields in a fieldset template:
         {% form_field form.first_name %} <br>
         {% form_field form.last_name %}
     {% endnested %}
+
+This tag also supports storing the result in a context variable of your choice
+instead of rendering.
 
 
 The `reuse` tag
