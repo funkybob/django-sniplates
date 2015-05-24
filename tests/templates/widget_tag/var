@@ -1,1 +1,1 @@
-{% load sniplates %}{% load_widgets foo='widgets.one' %}{% widget 'foo:var' var='value' %}
+{% load sniplates %}{% load_widgets foo='widgets.1' %}{% widget 'foo:var' var='value' %}
