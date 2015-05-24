@@ -78,3 +78,9 @@ class TestWidgetTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, 'more value\n')
+
+    def test_empty_alias_reference(self):
+        tmpl = get_template('alias_self')
+        output = tmpl.render(self.ctx)
+
+        self.assertEqual(output, 'referenced referencing')
