@@ -33,7 +33,9 @@ values to override, just like with `{% include %}`.  Currently does not support
 the `only` argument.
 
 The name is composed of the alias specified in the `load_widgets` tag, and the
-name of the block in that template, joined with a ':'.
+name of the block in that template, joined with a ':'. If you use an "empty" alias,
+the block will be searched for in the current template (and any templates it extends).
+This form can be used without a `load_widgets` tage.
 
 
 The `form_field` tag
