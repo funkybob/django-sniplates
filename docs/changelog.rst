@@ -2,7 +2,7 @@
 Changelog
 =========
 
-0.2.3
+0.3.0
 -----
 
 Features:
@@ -11,10 +11,16 @@ Features:
 - Now sets the right block context when rendering widgets so {{ block.super }} works.  Thanks Schinckel!
 - Added default Django widget template.
 - Added Django 1.8 compatibility.
+- Added ``_soft`` option to {% load_widgets %} to avoid reloading an alias.
+- Added "as foo" support to {% widget %} and {% nested_widget %}.  Thanks Schinkel!
+- A blank alias to {% widget %} and {% nested_widget %} will use the current template context.
+- {% reuse %} will now accept a list of block names to search for.
 
-Other:
+Testing:
 
+- Test on pypy3
 - Removed testing for Django 1.5 and 1.6.
+- Fixed test discovery on Django 1.4.  Thanks Schinckel!
 
 0.2.2
 -----
