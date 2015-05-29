@@ -107,6 +107,7 @@ def using(context, alias):
 
         context.render_context.push()
         context.render_context[BLOCK_CONTEXT_KEY] = block_set
+        context.render_context[WIDGET_CONTEXT_KEY] = widgets
 
         yield context
 

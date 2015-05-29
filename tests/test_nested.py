@@ -41,3 +41,9 @@ class TestNestedTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertEqual(output, '\nBEFORE <fieldset><caption>Caption</caption>content goes here</fieldset>\n')
+
+    def test_nested_content_still_has_parent_widgets(self):
+        tmpl = get_template('keep_widgets')
+        output = tmpl.render(self.ctx)
+
+        self.assertEqual(output, '\n<fieldset><caption></caption><input type="text" name="" value=""></fieldset>\n')

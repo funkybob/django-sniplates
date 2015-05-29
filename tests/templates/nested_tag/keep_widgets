@@ -1,0 +1,2 @@
+{% load sniplates %}{% load_widgets w='widgets' %}
+{% nested_widget 'w:fieldset' %}{% widget 'w:CharField' %}{% endnested %}
