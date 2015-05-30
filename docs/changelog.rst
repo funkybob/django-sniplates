@@ -12,9 +12,13 @@ Features:
 - Added default Django widget template.
 - Added Django 1.8 compatibility.
 - Added ``_soft`` option to {% load_widgets %} to avoid reloading an alias.
-- Added "as foo" support to {% widget %} and {% nested_widget %}.  Thanks Schinkel!
+- Added "as foo" support to {% widget %} and {% nested_widget %}.  Thanks Schinckel!
 - A blank alias to {% widget %} and {% nested_widget %} will use the current template context.
 - {% reuse %} will now accept a list of block names to search for.
+
+Bugs Fixed:
+
+- Don't lose widget context when inside a widget.  Thanks Schinckel!
 
 Testing:
 
