@@ -53,5 +53,4 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         """
         tmpl = get_template('multiplechoice')
         output = tmpl.render(self.ctx)
-        import bpdb; bpdb.set_trace()
-        self.assertEqual(output, '')
+        self.assertEqual(output, 'a, b\n')
