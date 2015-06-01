@@ -39,3 +39,10 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertTrue('type="dummy"' in output)
+
+    def test_value_none(self):
+        tmpl = get_template('choices_value_none')
+        output = tmpl.render(self.ctx)
+
+        self.assertTrue('value=""' in output)
+        self.assertFalse('value="None"' in output)
