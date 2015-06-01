@@ -39,3 +39,18 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertTrue('type="dummy"' in output)
+
+    def test_value_none(self):
+        tmpl = get_template('choices_value_none')
+        output = tmpl.render(self.ctx)
+
+        self.assertTrue('value=""' in output)
+        self.assertFalse('value="None"' in output)
+
+    def test_display_multivalue(self):
+        """
+        Test that iterables as value don't break the 'display' computation.
+        """
+        tmpl = get_template('multiplechoice')
+        output = tmpl.render(self.ctx)
+        self.assertEqual(output, 'a, b\n')

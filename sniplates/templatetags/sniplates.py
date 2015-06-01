@@ -308,17 +308,22 @@ def form_field(context, field, widget=None, **kwargs):
         field_data[attr] = getattr(field.field, attr, None)
 
     # Normalize the value [django.forms.widgets.Select.render_options]
-    value = field.value()
-    if value is None:
-        pass
-    elif isinstance(value, (list, tuple)):
-        value = map(force_text, value)
+    _value = field.value()
+    if _value is None:
+        value = _value
+    elif isinstance(_value, (list, tuple)):
+        value = map(force_text, _value)
     else:
-        value = force_text(field_data['value']())
+        value = force_text(_value)
     field_data['value'] = value
 
     if field_data['choices']:
-        field_data['display'] = dict(field.field.choices).get(field_data['value'], '')
+        _choices = dict(field.field.choices)
+        if isinstance(_value, (list, tuple)):
+            bits = [_choices.get(val, '') for val in _value]
+            field_data['display'] = ', '.join(bits)
+        else:
+            field_data['display'] = _choices.get(field_data['value'], '')
         field_data['choices'] = [
             (force_text(k), v)
             for k, v in field_data['choices']
