@@ -46,3 +46,12 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
         self.assertTrue('value=""' in output)
         self.assertFalse('value="None"' in output)
+
+    def test_display_multivalue(self):
+        """
+        Test that iterables as value don't break the 'display' computation.
+        """
+        tmpl = get_template('multiplechoice')
+        output = tmpl.render(self.ctx)
+        import bpdb; bpdb.set_trace()
+        self.assertEqual(output, '')

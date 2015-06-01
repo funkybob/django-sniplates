@@ -10,3 +10,4 @@ class TestForm(forms.Form):
         choices=tuple(enumerate('abcd')), required=False,
         widget=forms.HiddenInput, initial=None
     )
+    multi = forms.MultipleChoiceField(choices=tuple(enumerate('abcd')), initial=[0, 1])

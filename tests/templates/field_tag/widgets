@@ -3,3 +3,4 @@
     <option value="{{ val }}">{{ display }}</option>{% endfor %}
 </select>{% endblock %}
 {% block ChoiceField_HiddenInput %}<input type="hidden" name="{{ html_name }}" value="{{ value|default:"" }}">{% endblock %}
+{% block MultipleChoiceField_display %}{{ display }}{% endblock %}
