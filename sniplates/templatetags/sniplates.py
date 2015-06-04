@@ -314,7 +314,7 @@ def form_field(context, field, widget=None, **kwargs):
     elif isinstance(value, (list, tuple)):
         value = map(force_text, value)
     else:
-        value = force_text(field_data['value']())
+        value = force_text(value)
     field_data['value'] = value
 
     if field_data['choices']:
