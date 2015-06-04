@@ -301,27 +301,34 @@ def form_field(context, field, widget=None, **kwargs):
     }
 
     for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
-                 'html_name', 'id_for_label', 'label', 'name', 'value',):
+                 'html_name', 'id_for_label', 'label', 'name',):
         field_data[attr] = getattr(field, attr)
 
     for attr in ('choices', 'widget', 'required'):
         field_data[attr] = getattr(field.field, attr, None)
 
+    # Normalize the value [django.forms.widgets.Select.render_options]
+    value = field.value()
+    if value is None:
+        pass
+    elif isinstance(value, (list, tuple)):
+        value = map(force_text, value)
+    else:
+        value = force_text(value)
+    field_data['value'] = value
+
     if field_data['choices']:
-        field_data['display'] = dict(field.field.choices).get(field.value, '')
+        choices_map = dict(field.field.choices)
+        if isinstance(value, (list, tuple)):
+            field_data['display'] = [
+                choices_map.get(val, '') for val in value
+            ]
+        else:
+            field_data['display'] = choices_map.get(value, '')
         field_data['choices'] = [
             (force_text(k), v)
             for k, v in field_data['choices']
         ]
-        # Normalize the value [django.forms.widgets.Select.render_options]
-        value = field_data['value']
-        if value is None:
-            pass
-        elif isinstance(value, (list, tuple)):
-            value = map(force_text, value)
-        else:
-            value = force_text(field_data['value']())
-        field_data['value'] = value
 
     # Allow supplied values to override field data
     field_data.update(kwargs)
@@ -357,25 +364,6 @@ def auto_widget(field):
             '{field}',
         )
     ]
-
-
-@register.simple_tag
-def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
-    normal_row = lookup_block(alias, normal_row)
-    error_row = lookup_block(alias, error_row)
-    help_text = lookup_block(alias, help_text)
-
-    # Errors from non-field and hidden fields.
-    top_errors = form.non_field_errors()
-
-    for name, field in form.fields.items():
-        bf = form[name]
-
-        if bf.is_hidden:
-            pass
-        else:
-            pass
-    return ''
 
 
 @register.filter
