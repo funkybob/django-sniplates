@@ -318,7 +318,13 @@ def form_field(context, field, widget=None, **kwargs):
     field_data['value'] = value
 
     if field_data['choices']:
-        field_data['display'] = dict(field.field.choices).get(field_data['value'], '')
+        choices_map = dict(field.field.choices)
+        if isinstance(value, (list, tuple)):
+            field_data['display'] = [
+                choices_map.get(val, '') for val in value
+            ]
+        else:
+            field_data['display'] = choices_map.get(value, '')
         field_data['choices'] = [
             (force_text(k), v)
             for k, v in field_data['choices']
@@ -358,25 +364,6 @@ def auto_widget(field):
             '{field}',
         )
     ]
-
-
-@register.simple_tag
-def show_form(form, alias='forms', normal_row='normal_row', error_row='error_row', help_text='help_text', errors_on_separate_row=True):
-    normal_row = lookup_block(alias, normal_row)
-    error_row = lookup_block(alias, error_row)
-    help_text = lookup_block(alias, help_text)
-
-    # Errors from non-field and hidden fields.
-    top_errors = form.non_field_errors()
-
-    for name, field in form.fields.items():
-        bf = form[name]
-
-        if bf.is_hidden:
-            pass
-        else:
-            pass
-    return ''
 
 
 @register.filter
