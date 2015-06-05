@@ -98,6 +98,8 @@ And these from the ``Field`` itself:
 - widget
 - required
 
+If the field is a ChoicesField, an extra value `display` will be added, which
+is the display value for the current value, if any.
 
 The `nested_widget` tag
 =======================
