@@ -301,27 +301,36 @@ def form_field(context, field, widget=None, **kwargs):
     }
 
     for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
-                 'html_name', 'id_for_label', 'label', 'name', 'value',):
+                 'html_name', 'id_for_label', 'label', 'name',):
         field_data[attr] = getattr(field, attr)
 
     for attr in ('choices', 'widget', 'required'):
         field_data[attr] = getattr(field.field, attr, None)
 
+    # Grab the calculated value
+    value = field.value()
+
+    # If we have choices, help out some
     if field_data['choices']:
-        field_data['display'] = dict(field.field.choices).get(field.value, '')
+        if isinstance(value, (list, tuple)):
+            # XXX Is there any value in providing a separate display list?
+            pass
+        else:
+            field_data['display'] = dict(field.field.choices).get(value, '')
+
         field_data['choices'] = [
             (force_text(k), v)
             for k, v in field_data['choices']
         ]
-        # Normalize the value [django.forms.widgets.Select.render_options]
-        value = field_data['value']
-        if value is None:
-            pass
-        elif isinstance(value, (list, tuple)):
-            value = map(force_text, value)
-        else:
-            value = force_text(field_data['value']())
-        field_data['value'] = value
+
+    # Normalize the value [django.forms.widgets.Select.render_options]
+    if value is None:
+        pass
+    elif isinstance(value, (list, tuple)):
+        value = tuple(map(force_text, value))
+    else:
+        value = force_text(value)
+    field_data['value'] = value
 
     # Allow supplied values to override field data
     field_data.update(kwargs)
