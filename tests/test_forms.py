@@ -28,6 +28,26 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
         self.assertTrue('<option value="0">a</option>' in output)
 
+    def test_choices_display(self):
+        tmpl = get_template('choices')
+        self.ctx['form'] = TestForm(initial={'oneof': 2})
+        output = tmpl.render(self.ctx)
+
+        self.assertTrue('Selected: c' in output)
+
+    def test_choices_multi(self):
+        tmpl = get_template('choices_multi')
+        selected = [1, 3]
+        self.ctx['form'] = TestForm(initial={'many': selected})
+        output = tmpl.render(self.ctx)
+
+        for idx, opt in enumerate('abcd'):
+            self.assertTrue('<option value="{}" {}>{}'.format(
+                idx,
+                'selected' if idx in selected else '',
+                opt,
+            ) in output)
+
     def test_widget_override(self):
         tmpl = get_template('override')
         output = tmpl.render(self.ctx)
