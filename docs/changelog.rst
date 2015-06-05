@@ -2,6 +2,15 @@
 Changelog
 =========
 
+0.3.1
+-----
+
+Bugs Fixed:
+
+- Only set 'display' when value is a scalar.
+- BoundField.value is a callable
+- Always normalise value, not just when we have choices
+
 0.3.0
 -----
 
