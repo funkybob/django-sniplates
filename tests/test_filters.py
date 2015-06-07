@@ -17,7 +17,7 @@ class TestFilters(TemplateTestMixin, SimpleTestCase):
         }
         output = tmpl.render(self.ctx)
 
-        if VERSION[1] >= 5:
+        if VERSION[:2] >= (1, 5):
             self.assertEqual(output, ' a="aye" b="bee" c="cee" \n')
         else:
             self.assertTrue(' a=&quot;aye&quot; ' in output)
