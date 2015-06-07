@@ -1,5 +1,6 @@
 from django.test import SimpleTestCase
 from django.template.loader import get_template
+from django import VERSION
 from .utils import TemplateTestMixin, template_path, override_settings
 
 @override_settings(
@@ -16,4 +17,7 @@ class TestFilters(TemplateTestMixin, SimpleTestCase):
         }
         output = tmpl.render(self.ctx)
 
-        self.assertEqual(output, ' a="aye" b="bee" c="cee" \n')
+        if VERSION[1] >= 5:
+            self.assertEqual(output, ' a="aye" b="bee" c="cee" \n')
+        else:
+            self.assertEqual(output, ' a=&quot;aye&quot; b=&quot;bee&quot; c=&quot;cee&quot; \n')
