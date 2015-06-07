@@ -20,4 +20,7 @@ class TestFilters(TemplateTestMixin, SimpleTestCase):
         if VERSION[1] >= 5:
             self.assertEqual(output, ' a="aye" b="bee" c="cee" \n')
         else:
-            self.assertEqual(output, ' a=&quot;aye&quot; b=&quot;bee&quot; c=&quot;cee&quot; \n')
+            output_values = output.split(' ')
+            self.assertTrue('a=&quot;aye&quot;' in output_values)
+            self.assertTrue('b=&quot;bee&quot;' in output_values)
+            self.assertTrue('c=&quot;cee&quot;' in output_values)
