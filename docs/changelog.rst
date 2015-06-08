@@ -10,6 +10,7 @@ Bugs Fixed:
 - Only set 'display' when value is a scalar.
 - BoundField.value is a callable
 - Always normalise value, not just when we have choices
+- Mark flatatt safe for Django 1.4
 
 0.3.0
 -----
