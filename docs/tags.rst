@@ -25,8 +25,8 @@ without causing duplicate loads.
    Because of how Django's templates work, if you are using this in a template
    which inherits from another, it MUST be inside a {% block %} tag.
 
-   Any content in a template starting with {% extends %} is ignored and never
-   rendered if it's not a {% block %} tag.
+   Any content in a template starting with {% extends %} which it outside a
+   {% block %} tag is ignored and never rendered.
 
 The `widget` tag
 ================
