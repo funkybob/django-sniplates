@@ -9,7 +9,7 @@ except ImportError:  # django 1.4
         return mark_safe(flatatt_(text))
 
 from django import template
-from django.db.models.fields.files import FieldFile
+from django.db.models.fields.files import FieldFile, ImageFile
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
@@ -327,8 +327,19 @@ def form_field(context, field, widget=None, **kwargs):
             for k, v in field_data['choices']
         ]
 
-    if isinstance(value, FieldFile):
-        field_data['file'] = value
+    # If it's a FileField, expose attributes of FieldFile that might be useful
+    if value and isinstance(value, FieldFile):
+        file_data = {
+            'size': value.size,
+            'url': value.url,
+        }
+        if isinstance(value, ImageFile):
+            file_data.update({
+                'width': value.width,
+                'height': value.height,
+            })
+
+        field_data['file'] = file_data
 
     # Normalize the value [django.forms.widgets.Select.render_options]
     if value is None:

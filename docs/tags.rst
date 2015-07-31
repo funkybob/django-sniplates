@@ -97,8 +97,8 @@ The following values are take from the ``BoundField``:
 - value
 
 If the field is a FileField, an extra value `file` will be added, which
-is the FieldFile object for the current value, if any.  This can be used
-to access the current file's URL.
+contains the size and url attributes of the current file.  If it's an
+ImageField, the width and height may also be avaialble.
 
 Values from ``Field``
 ---------------------

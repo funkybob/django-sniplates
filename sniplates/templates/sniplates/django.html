@@ -101,9 +101,12 @@ How to render errors
 {% block TimeInput %}{% reuse "input" input_type="time" value=value|date:'H:i:s' %}{% endblock %}
 
 {% block ClearableFileInput %}
-Currently: <a href="{{ file.url }}">{{ file.url }}</a>
-<br>
-Change: {% reuse "input" input_type="file" value="" %}
+{% if file %}
+    Currently: <a href="{{ file.url }}">{{ file.url }}</a>
+    <br>
+    Change:
+{% endif %}
+{% reuse "input" input_type="file" value="" %}
 {% endblock %}
 
 TODO:
