@@ -82,7 +82,7 @@ How to render errors
     id="{{ id }}"
     value="{{ value|default:"" }}"
     class="{{ css_classes }} {{ errors|yesno:"error," }}"
-    {{ widget.attrs|flat_attrs }}
+    {{ widget.attrs|flatattrs }}
     {{ required|yesno:"required," }}
     {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
 >
@@ -110,7 +110,7 @@ Fields not derived from InputField:
 
 {% block MultipleHiddenInput %}
 {% for value in value %}
-<input type="hidden" name="{{ name }}" id="{{ id }}_{{ forloop.counter0 }}" value="{{ value|default:'' }}" {{ widget.attrs|flat_attrs }} {{ required|yesno:"required," }}>
+<input type="hidden" name="{{ name }}" id="{{ id }}_{{ forloop.counter0 }}" value="{{ value|default:'' }}" {{ widget.attrs|flatattrs }} {{ required|yesno:"required," }}>
 {% endfor %}
 {% endblock %}
 
@@ -119,12 +119,12 @@ Fields not derived from InputField:
     class="{{ css_classes }} {{ errors|yesno:"error," }}"
     {{ required|yesno:"required," }}
     {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
-    {{ widget.attrs|flat_attrs }}
+    {{ widget.attrs|flatattrs }}
 >{{ value|default:'' }}</textarea>
 {% endblock %}
 
 {% block Select %}
-<select name="{{ html_name }}" id="{{ id }}" {{ widget.attrs|flat_attrs }}>
+<select name="{{ html_name }}" id="{{ id }}" {{ widget.attrs|flatattrs }}>
 {% for val, display in choices %}
     <option value="{{ val }}" {% if val == value|default:None %}selected{% endif %}>{{ display }}</option>
 {% endfor %}
@@ -132,7 +132,7 @@ Fields not derived from InputField:
 {% endblock %}
 
 {% block SelectMultiple %}
-<select name="{{ html_name }}" id="{{ id }}" {{ widget.attrs|flat_attrs }} multiple>
+<select name="{{ html_name }}" id="{{ id }}" {{ widget.attrs|flatattrs }} multiple>
 {% for val, display in choices %}
     <option value="{{ val }}" {% if val in value %}selected{% endif %}>{{ display }}</option>
 {% endfor %}
