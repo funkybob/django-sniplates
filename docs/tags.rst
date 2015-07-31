@@ -96,6 +96,10 @@ The following values are take from the ``BoundField``:
 - name
 - value
 
+If the field is a FileField, an extra value `file` will be added, which
+is the FieldFile object for the current value, if any.  This can be used
+to access the current file's URL.
+
 Values from ``Field``
 ---------------------
 

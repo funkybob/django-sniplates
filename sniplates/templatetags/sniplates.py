@@ -1,4 +1,3 @@
-
 from contextlib import contextmanager
 
 try:
@@ -8,7 +7,9 @@ except ImportError:  # django 1.4
     from django.utils.safestring import mark_safe
     def flatatt(text):
         return mark_safe(flatatt_(text))
+
 from django import template
+from django.db.models.fields.files import FieldFile
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
@@ -325,6 +326,9 @@ def form_field(context, field, widget=None, **kwargs):
             (force_text(k), v)
             for k, v in field_data['choices']
         ]
+
+    if isinstance(value, FieldFile):
+        field_data['file'] = value
 
     # Normalize the value [django.forms.widgets.Select.render_options]
     if value is None:
