@@ -90,3 +90,8 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+
+Thanks
+======
+
+This project was originally inspired by a feature request by Stephan Sokolow.
