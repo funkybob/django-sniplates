@@ -100,9 +100,17 @@ How to render errors
 {% block DateTimeInput %}{% reuse "input" input_type="datetime" value=value|date:'Y-m-d H:i:s' %}{% endblock %}
 {% block TimeInput %}{% reuse "input" input_type="time" value=value|date:'H:i:s' %}{% endblock %}
 
+{% block ClearableFileInput %}
+{% if file %}
+    Currently: <a href="{{ file.url }}">{{ file.url }}</a>
+    <br>
+    Change:
+{% endif %}
+{% reuse "input" input_type="file" value="" %}
+{% endblock %}
+
 TODO:
 
-{% block ClearableFileInput %}{% endblock %}
 {% block SplitDateTimeWidget %}{% endblock %}
 {% block SplitHiddenDateTimeWidget %}{% endblock %}
 

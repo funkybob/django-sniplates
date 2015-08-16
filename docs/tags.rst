@@ -96,6 +96,10 @@ The following values are take from the ``BoundField``:
 - name
 - value
 
+If the field is a FileField, an extra value `file` will be added, which
+contains the size and url attributes of the current file.  If it's an
+ImageField, the width and height may also be avaialble.
+
 Values from ``Field``
 ---------------------
 
