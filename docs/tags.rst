@@ -77,8 +77,9 @@ block matching the following patterns:
 - {widget}
 - {field}
 
-These will be looked up within the alias block set "form", unless the alias
-keyword is passed to override it.
+.. note::
+    These will be looked up within the alias block set "**form**", unless the ``alias``
+    keyword is passed to override it.
 
 Values from ``BoundField``
 --------------------------
