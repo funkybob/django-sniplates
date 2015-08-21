@@ -9,6 +9,7 @@ setup(
     url='http://github.com/funkybob/django-sniplates',
     keywords=['django', 'templates',],
     packages = find_packages(exclude=('tests*',)),
+    include_package_data=True,
     zip_safe=False,
     classifiers = [
         'Environment :: Web Environment',
