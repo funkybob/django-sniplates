@@ -2,6 +2,19 @@
 Changelog
 =========
 
+0.3.2
+-----
+
+Features:
+
+- Explode details from FileField [Thanks mattmcc]
+
+Bugs Fixed:
+
+- Fixed use of 'flatattrs' in templates
+- Added ClearableFileInput to default template [Thanks mattmcc]
+- Corrected packaging to include templates [Thanks kezabelle]
+
 0.3.1
 -----
 
