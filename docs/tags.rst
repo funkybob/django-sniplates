@@ -81,6 +81,25 @@ block matching the following patterns:
     These will be looked up within the alias block set "**form**", unless the ``alias``
     keyword is passed to override it.
 
+By way of example, given the following form::
+
+    from django.forms import Form, CharField, TextInput
+
+    class MyForm(Form):
+        example_field = CharField(widget=TextInput)
+
+using ``{% form_field myform.example_field %}`` without `widget` would look
+for a block with one of the following names, in the following order:
+
+- ``CharField_TextInput_example_field``
+- ``CharField_example_field``
+- ``TextInput_example_field``
+- ``CharField_TextInput``
+- ``example_field``
+- ``TextInput``
+- ``CharField``
+
+
 Values from ``BoundField``
 --------------------------
 
