@@ -1,3 +1,4 @@
+from collections import namedtuple
 from contextlib import contextmanager
 
 try:
@@ -286,6 +287,11 @@ def nested_widget(parser, token):
     return NestedWidget(widget, nodelist, kwargs, asvar)
 
 
+class ChoiceWrapper(namedtuple('ChoiceWrapper', 'value display')):
+    def is_group(self):
+        return isinstance(self.display, (list, tuple))
+
+
 @register.simple_tag(takes_context=True)
 def form_field(context, field, widget=None, **kwargs):
     if widget is None:
@@ -322,10 +328,12 @@ def form_field(context, field, widget=None, **kwargs):
         else:
             field_data['display'] = dict(field.field.choices).get(value, '')
 
-        field_data['choices'] = [
-            (force_text(k), v)
+        # Wrap choices into an object which can discern (in a template) whether
+        # or not it represents a group of choices vs a choice.
+        field_data['choices'] = tuple(
+            ChoiceWrapper(value=force_text(k), display=v)
             for k, v in field_data['choices']
-        ]
+        )
 
     # If it's a FileField, expose attributes of FieldFile that might be useful
     if value and isinstance(value, FieldFile):
