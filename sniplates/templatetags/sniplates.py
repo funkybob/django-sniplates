@@ -341,10 +341,10 @@ def form_field(context, field, widget=None, **kwargs):
 
         field_data['file'] = file_data
 
-    # Normalize the value [django.forms.widgets.Select.render_options]
     if value is None:
         pass
     elif isinstance(value, (list, tuple)):
+        # Normalize the value [django.forms.widgets.Select.render_options]
         value = tuple(map(force_text, value))
     else:
         value = force_text(value)
