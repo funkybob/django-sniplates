@@ -150,14 +150,9 @@ def load_widgets(context, **kwargs):
         if _soft and alias in widgets:
             continue
 
-        context.render_context.push()
-        context.render_context[BLOCK_CONTEXT_KEY] = BlockContext()
-
-        try:
+        with context.render_context.update({BLOCK_CONTEXT_KEY: BlockContext()):
             blocks = resolve_blocks(template_name, context)
             widgets[alias] = blocks
-        finally:
-            context.render_context.pop()
 
     return ''
 
@@ -187,11 +182,8 @@ class Widget(template.Node):
                 key: val.resolve(context)
                 for key, val in self.kwargs.items()
             }
-            context.update(kwargs)
-            try:
+            with context.update(kwargs):
                 result = block.render(context)
-            finally:
-                context.pop()
 
             if self.asvar:
                 context[self.asvar] = result
@@ -242,16 +234,11 @@ class NestedWidget(template.Node):
                 key: val.resolve(context)
                 for key, val in self.kwargs.items()
             }
-            context.update(kwargs)
-            try:
+
+            with context.update(kwargs):
                 content = self.nodelist.render(context)
-                try:
-                    context.update({'content': content})
+                with context.update({'content': content}):
                     result = block.render(context)
-                finally:
-                    context.pop()
-            finally:
-                context.pop()
 
             if self.asvar:
                 context[self.asvar] = result
@@ -317,6 +304,9 @@ def form_field(context, field, widget=None, **kwargs):
     for attr in ('choices', 'widget', 'required'):
         field_data[attr] = getattr(field.field, attr, None)
 
+    field_data = FIELD.get(field_data['field_type'], lambda x: x)(field_data)
+    field_data = WIDGET.get(field_data['widget_type'], lambda x: x)(field_data)
+
     # Grab the calculated value
     value = field.value()
 
@@ -335,20 +325,6 @@ def form_field(context, field, widget=None, **kwargs):
             for k, v in field_data['choices']
         )
 
-    # If it's a FileField, expose attributes of FieldFile that might be useful
-    if value and isinstance(value, FieldFile):
-        file_data = {
-            'size': value.size,
-            'url': value.url,
-        }
-        if isinstance(value, ImageFile):
-            file_data.update({
-                'width': value.width,
-                'height': value.height,
-            })
-
-        field_data['file'] = file_data
-
     if value is None:
         pass
     elif isinstance(value, (list, tuple)):
@@ -364,11 +340,8 @@ def form_field(context, field, widget=None, **kwargs):
     with using(context, alias):
         block = find_block(context, *block_names)
 
-        context.update(field_data)
-        try:
+        with context.update(field_data):
             return block.render(context)
-        finally:
-            context.pop()
 
 
 def auto_widget(field):
@@ -425,8 +398,5 @@ def reuse(context, block_list, **kwargs):
     else:
         return ''
 
-    context.update(kwargs)
-    try:
+    with context.update(kwargs):
         return block.render(context)
-    finally:
-        context.pop()
