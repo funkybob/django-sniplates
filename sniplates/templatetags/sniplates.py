@@ -149,7 +149,7 @@ def load_widgets(context, **kwargs):
         if _soft and alias in widgets:
             continue
 
-        with context.render_context.update({BLOCK_CONTEXT_KEY: BlockContext()):
+        with context.render_context.update({BLOCK_CONTEXT_KEY: BlockContext()}):
             blocks = resolve_blocks(template_name, context)
             widgets[alias] = blocks
 
