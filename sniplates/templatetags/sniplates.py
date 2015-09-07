@@ -150,7 +150,7 @@ def load_widgets(context, **kwargs):
         if _soft and alias in widgets:
             continue
 
-        with context.render_context.update({BLOCK_CONTEXT_KEY: BlockContext()}):
+        with context.render_context.push({BLOCK_CONTEXT_KEY: BlockContext()}):
             blocks = resolve_blocks(template_name, context)
             widgets[alias] = blocks
 
@@ -182,7 +182,7 @@ class Widget(template.Node):
                 key: val.resolve(context)
                 for key, val in self.kwargs.items()
             }
-            with context.update(kwargs):
+            with context.push(kwargs):
                 result = block.render(context)
 
             if self.asvar:
@@ -235,9 +235,9 @@ class NestedWidget(template.Node):
                 for key, val in self.kwargs.items()
             }
 
-            with context.update(kwargs):
+            with context.push(kwargs):
                 content = self.nodelist.render(context)
-                with context.update({'content': content}):
+                with context.push({'content': content}):
                     result = block.render(context)
 
             if self.asvar:
@@ -340,7 +340,7 @@ def form_field(context, field, widget=None, **kwargs):
     with using(context, alias):
         block = find_block(context, *block_names)
 
-        with context.update(field_data):
+        with context.push(field_data):
             return block.render(context)
 
 
@@ -398,5 +398,5 @@ def reuse(context, block_list, **kwargs):
     else:
         return ''
 
-    with context.update(kwargs):
+    with context.push(kwargs):
         return block.render(context)
