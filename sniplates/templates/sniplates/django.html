@@ -118,7 +118,7 @@ Fields not derived from InputField:
 
 {% block MultipleHiddenInput %}
 {% for value in value %}
-<input type="hidden" name="{{ name }}" id="{{ id }}_{{ forloop.counter0 }}" value="{{ value|default:'' }}" {{ widget.attrs|flatattrs }} {{ required|yesno:"required," }}>
+<input type="hidden" name="{{ html_name }}" id="{{ id }}_{{ forloop.counter0 }}" value="{{ value|default:'' }}" {{ widget.attrs|flatattrs }} {{ required|yesno:"required," }}>
 {% endfor %}
 {% endblock %}
 
