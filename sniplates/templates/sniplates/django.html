@@ -159,7 +159,7 @@ Checkbox is a special case and needs its own template.
 {% block RadioSelect %}
 <ul id="{{ id }}">
 {% for val, display in choices %}
-    <li><input type="radio" id="{{ id}}_{{ forloop.counter0 }}" value="{{ val }}" {% if val == value|default:"" %}checked{% endif %}>{{ display }}</li>
+    <li><input name="{{ html_name }}" type="radio" id="{{ id}}_{{ forloop.counter0 }}" value="{{ val }}" {% if val == value|default:"" %}checked{% endif %}>{{ display }}</li>
 {% endfor %}
 </ul>
 {% endblock %}
@@ -167,7 +167,7 @@ Checkbox is a special case and needs its own template.
 {% block CheckboxSelectMultiple %}
 <ul id="{{ id }}">
 {% for val, display in choices %}
-    <li><input type="checkbox" id="{{ id}}_{{ forloop.counter0 }}" value="{{ val }}" {% if val in value %}checked{% endif %}>{{ display }}</li>
+    <li><input name="{{ html_name }}" type="checkbox" id="{{ id}}_{{ forloop.counter0 }}" value="{{ val }}" {% if val in value %}checked{% endif %}>{{ display }}</li>
 {% endfor %}
 </ul>
 {% endblock %}
