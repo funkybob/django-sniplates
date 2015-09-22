@@ -1,15 +1,7 @@
 from collections import namedtuple
 from contextlib import contextmanager
 
-try:
-    from django.forms.utils import flatatt
-except ImportError:  # django 1.4
-    from django.forms.util import flatatt as flatatt_
-    from django.utils.safestring import mark_safe
-
-    def flatatt(text):
-        return mark_safe(flatatt_(text))
-
+from django.forms.utils import flatatt
 from django import template
 from django.template.base import token_kwargs
 from django.template.loader import get_template
