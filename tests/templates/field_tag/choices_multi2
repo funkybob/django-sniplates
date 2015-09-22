@@ -1,0 +1,2 @@
+{% load sniplates %}{% load_widgets form="widgets" %}{% form_field form.many2 %}
+

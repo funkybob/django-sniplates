@@ -12,6 +12,8 @@
 {% endblock %}
 
 {% block MultipleChoiceField %}
+{{ value }}
+{{ choices|safe }}
 <select name="{{ html_name }}">
 {% for val, display in choices %}
     <option value="{{ val }}" {% if val in value %}selected{% endif %}>{{ display }}</option>
