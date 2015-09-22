@@ -24,6 +24,7 @@ Contents:
    :maxdepth: 2
 
    tags
+   extractor
    changelog
    formulation
 

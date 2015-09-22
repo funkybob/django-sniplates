@@ -40,9 +40,9 @@ values to override, just like with `{% include %}`.  Currently does not support
 the `only` argument.
 
 The name is composed of the alias specified in the `load_widgets` tag, and the
-name of the block in that template, joined with a ':'. If you use an "empty" alias,
-the block will be searched for in the current template (and any templates it extends).
-This form can be used without a `load_widgets` tage.
+name of the block in that template, joined with a ':'. If you use an "empty"
+alias, the block will be searched for in the current template (and any
+templates it extends).  This form can be used without a `load_widgets` tage.
 
 You may use the `as` form of the tag to store the result of the block in the
 context variable you supply instead of rendering it in the template.
@@ -55,13 +55,10 @@ The `form_field` tag
 
     {% form_field form.fieldname [widget=] [alias=form] .... %}
 
-.. note::
+Works like the ``widget`` tag, but extracts useful attributes of the field into
+the context.
 
-   This tag is compatible with the `field` tag from ``formulation``, and can
-   use the same templates.
-
-Works like the ``widget`` tag, but "explodes" useful attributes of the field
-into the context.
+The values are extracted using a `FieldExtractor <extractor>`_ class, selected according to the form field class.
 
 Any extra keyword arguments you pass to the field tag will overwrite values of
 the same name.
@@ -78,8 +75,8 @@ block matching the following patterns:
 - {field}
 
 .. note::
-    These will be looked up within the alias block set "**form**", unless the ``alias``
-    keyword is passed to override it.
+    These will be looked up within the alias block set "**form**", unless the
+    ``alias`` keyword is passed to override it.
 
 By way of example, given the following form::
 
