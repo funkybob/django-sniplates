@@ -301,6 +301,8 @@ class FieldExtractor(dict):
 
     @cached_property
     def value(self):
+        if isinstance(self.raw_value, (tuple, list)):
+            return [force_text(bit) for bit in self.raw_value]
         return force_text(self.raw_value)
 
     @cached_property
