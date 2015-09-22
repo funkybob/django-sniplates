@@ -5,11 +5,11 @@ try:
 except ImportError:  # django 1.4
     from django.forms.util import flatatt as flatatt_
     from django.utils.safestring import mark_safe
+
     def flatatt(text):
         return mark_safe(flatatt_(text))
 
 from django import template
-from django.db.models.fields.files import FieldFile, ImageFile
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
@@ -17,6 +17,7 @@ from django.template.loader_tags import (
 )
 from django.utils import six
 from django.utils.encoding import force_text
+from django.utils.functional import cached_property
 
 register = template.Library()
 
@@ -273,33 +274,92 @@ def nested_widget(parser, token):
     return NestedWidget(widget, nodelist, kwargs, asvar)
 
 
-def _extract_file_field(field_data):
+class FieldExtractor(dict):
     '''
-    If it's a FileField, expose attributes of FieldFile that might be useful
+    Base class for extracting Field details.
+    Acts as a dict so we can push it on the context stack.
     '''
-    value = field_data['value']
-    if value:
-        file_data = {
-            'size': value.size,
-            'url': value.url,
-        }
-        if isinstance(value, ImageFile):
-            file_data.update({
-                'width': value.width,
-                'height': value.height,
-            })
+    def __init__(self, field):
+        self.form_field = field
+        self.update({
+            'id': field.auto_id,
+            'widget_type': field.field.widget.__class__.__name__,
+            'field_type': field.field.__class__.__name__,
+        })
 
-        field_data['file'] = file_data
+        for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
+                     'html_name', 'id_for_label', 'label', 'name',):
+            self[attr] = getattr(field, attr)
 
-    return field_data
+        for attr in ('widget', 'required'):
+            self[attr] = getattr(field.field, attr, None)
+
+    def __contains__(self, key):
+        '''
+        Context uses 'if key in ...'
+        '''
+        return key in self.keys() or hasattr(self, key)
+
+    def __missing__(self, key):
+        return getattr(self, key)
+
+    @cached_property
+    def raw_value(self):
+        return self.form_field.value()
+
+    @cached_property
+    def value(self):
+        return force_text(self.raw_value)
+
+    @cached_property
+    def display(self):
+        '''Display value for selected choice.'''
+        return dict(self.choices).get(self.value, '')
+
+    @cached_property
+    def choices(self):
+        c = self.form_field.field.choices
+        if not c:
+            return c
+
+        return tuple(
+            (force_text(k), v)
+            for k, v in self.form_field.field.choices
+        )
+
+
+class FileFieldExtractor(FieldExtractor):
+
+    @cached_property
+    def file_size(self):
+        if self.value:
+            return self.value.size
+
+    @cached_property
+    def url(self):
+        if self.value:
+            return self.value.url
+
+
+class ImageFieldExtractor(FileFieldExtractor):
+
+    @cached_property
+    def width(self):
+        if self.value:
+            return self.value.width
+
+    @cached_property
+    def height(self):
+        if self.value:
+            return self.value.height
 
 
 # Map of field types to functions for extracting their data
-FIELD = {
-    'FileField': _extract_file_field,
+EXTRACTOR = {
+    'FileField': FileFieldExtractor,
+    'ImageField': ImageFieldExtractor,
 }
-# Map of widget type to functions for extracting their data
-WIDGET = {}
+
 
 @register.simple_tag(takes_context=True)
 def form_field(context, field, widget=None, **kwargs):
@@ -312,47 +372,8 @@ def form_field(context, field, widget=None, **kwargs):
 
         block_names = [block_name]
 
-    field_data = {
-        'form_field': field,
-        'id': field.auto_id,
-        'widget_type': field.field.widget.__class__.__name__,
-        'field_type': field.field.__class__.__name__,
-    }
-
-    for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
-                 'html_name', 'id_for_label', 'label', 'name',):
-        field_data[attr] = getattr(field, attr)
-
-    for attr in ('choices', 'widget', 'required'):
-        field_data[attr] = getattr(field.field, attr, None)
-
-    field_data = FIELD.get(field_data['field_type'], lambda x: x)(field_data)
-    field_data = WIDGET.get(field_data['widget_type'], lambda x: x)(field_data)
-
-    # Grab the calculated value
-    value = field.value()
-
-    # If we have choices, help out some
-    if field_data['choices']:
-        if isinstance(value, (list, tuple)):
-            # XXX Is there any value in providing a separate display list?
-            pass
-        else:
-            field_data['display'] = dict(field.field.choices).get(value, '')
-
-        field_data['choices'] = [
-            (force_text(k), v)
-            for k, v in field_data['choices']
-        ]
-
-    if value is None:
-        pass
-    elif isinstance(value, (list, tuple)):
-        # Normalize the value [django.forms.widgets.Select.render_options]
-        value = tuple(map(force_text, value))
-    else:
-        value = force_text(value)
-    field_data['value'] = value
+    field_type = field.field.__class__.__name__
+    field_data = EXTRACTOR.get(field_type, FieldExtractor)(field)
 
     # Allow supplied values to override field data
     field_data.update(kwargs)
@@ -360,8 +381,11 @@ def form_field(context, field, widget=None, **kwargs):
     with using(context, alias):
         block = find_block(context, *block_names)
 
-        with context.push(field_data):
+        try:
+            context.dicts.append(field_data)
             return block.render(context)
+        finally:
+            context.dicts.pop()
 
 
 def auto_widget(field):
