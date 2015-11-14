@@ -7,8 +7,6 @@ Changelog
 
 Features:
 
-- Added `visible_fields` and `hidden_fields` filters
-
 0.3.2
 -----
 
