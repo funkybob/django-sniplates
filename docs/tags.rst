@@ -172,15 +172,3 @@ define reusable "macro" blocks, without having to load a separate widget set.
 As with other tags, you can extend the context by passing keyword arguments.
 
 .. note:: This tag only works in templates that {% extends %} another template.
-
-The `flatattrs` filter
-=======================
-
-.. code-block:: django
-
-   {{ attrdict|flatarrs }}
-
-This is simply a wrapper around :func:`django.forms.utils.flatatt`
-
-It converts a dict of attributes into a string, in proper key="value" syntax.
-The values will be escaped, but keys will not.
