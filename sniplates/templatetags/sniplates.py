@@ -430,16 +430,3 @@ def reuse(context, block_list, **kwargs):
         return block.render(context)
     finally:
         context.pop()
-
-
-@register.filter
-def hidden_fields(form):
-    for field in form.fields.values():
-        if field.is_hidden:
-            yield field
-
-@register.filter
-def visible_fields(form):
-    for field in form.fields.values():
-        if not field.is_hidden:
-            yield field
