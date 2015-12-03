@@ -319,6 +319,7 @@ def form_field(context, field, widget=None, **kwargs):
 
     # Grab the calculated value
     value = field.value()
+    field_data['raw_value'] = value
 
     # If we have choices, help out some
     if field_data['choices']:
