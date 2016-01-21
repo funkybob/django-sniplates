@@ -114,7 +114,8 @@ The following values are take from the ``BoundField``:
 - id_for_label
 - label
 - name
-- value
+- value (value of the field converted to string)
+- raw_value (e.g. True/False for BooleanField or datetime.datetime for DateTimeField)
 
 If the field is a FileField, an extra value `file` will be added, which
 contains the size and url attributes of the current file.  If it's an
