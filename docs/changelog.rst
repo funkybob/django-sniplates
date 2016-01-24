@@ -2,7 +2,7 @@
 Changelog
 =========
 
-0.4.0 (2015-09-??)
+0.4.0 (2016-01-??)
 ------------------
 
 .. note:: This app is no longer compatible with Django versions older than 1.6
@@ -13,10 +13,16 @@ Changelog
 Features:
 
 - Added pluggable FieldExploder classes
-- Added `raw_value` to Form Field exploded attributes
-- `choices` and `display` are now lazy
+- Added ``raw_value`` to Form Field exploded attributes
+- ``choices`` and ``display`` are now lazy
 
 Bugs Fixed:
+
+Backwards incompatible:
+
+- Your form widgets may need updates related to ``value`` and ``raw_value``.
+  ``value`` is no longer cleaned for a proper string-version. Consult
+  ``sniplates/django.html`` for a guideline.
 
 0.3.2
 -----
