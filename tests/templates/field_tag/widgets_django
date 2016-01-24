@@ -3,4 +3,3 @@
 {% for field in form %}
 {% form_field field %}
 {% endfor %}
-{{ form.null_boolean_select }}

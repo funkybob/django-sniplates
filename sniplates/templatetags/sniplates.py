@@ -267,6 +267,11 @@ def nested_widget(parser, token):
     return NestedWidget(widget, nodelist, kwargs, asvar)
 
 
+class ChoiceWrapper(namedtuple('ChoiceWrapper', 'value display')):
+    def is_group(self):
+        return isinstance(self.display, (list, tuple))
+
+
 class FieldExtractor(dict):
     '''
     Base class for extracting Field details.
@@ -318,7 +323,7 @@ class FieldExtractor(dict):
             return c
 
         return tuple(
-            (force_text(k), v)
+            ChoiceWrapper(value=force_text(k), display=v)
             for k, v in self.form_field.field.choices
         )
 

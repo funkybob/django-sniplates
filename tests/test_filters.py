@@ -1,7 +1,7 @@
 from collections import OrderedDict
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 from django.template.loader import get_template
-from .utils import TemplateTestMixin, template_path, override_settings
+from .utils import TemplateTestMixin, template_path
 
 
 @override_settings(
