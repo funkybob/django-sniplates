@@ -11,11 +11,11 @@ Django Sniplates
 .. image:: https://travis-ci.org/funkybob/django-sniplates.png
               :target: https://travis-ci.org/funkybob/django-sniplates
 
-.. image:: https://pypip.in/d/django-sniplates/badge.png
-              :target: https://crate.io/packages/django-sniplates
+.. .. image:: https://pypip.in/d/django-sniplates/badge.png
+..              :target: https://crate.io/packages/django-sniplates
 
-.. image:: https://pypip.in/v/django-sniplates/badge.png
-              :target: https://crate.io/packages/django-sniplates
+.. image:: https://img.shields.io/pypi/v/django-sniplates.svg
+  :target: https://pypi.python.org/pypi/django-sniplates
 
 
 Contents:
@@ -43,7 +43,7 @@ an arsenal of template macros.
 Requirements
 ------------
 
-Requires Django 1.4 or newer, and is tested against Python 2.7, 3.3, 3.4, and
+Requires Django 1.7 or newer, and is tested against Python 2.7, 3.3, 3.4, 3.5 and
 PyPy.
 
 Quick-start
@@ -55,7 +55,7 @@ First, install sniplates:
 
    pip install django-sniplates
 
-And add it to INSTALLED_APPS.
+And add it to ``INSTALLED_APPS``.
 
 Next, write a template with your widgets.  Let's go with bootstrap tools, and
 call it `widgets/bootstrap.html`
