@@ -99,8 +99,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
         # all kind of selects
         self.assertInHTML(expected_output['select'], output, msg_prefix='Select rendered incorrectly: ')
-        # self.assertInHTML(
-        #     expected_output['null_boolean_select'], output, msg_prefix='NullBooleanSelect rendered incorrectly: ')
+        self.assertInHTML(
+            expected_output['null_boolean_select'], output, msg_prefix='NullBooleanSelect rendered incorrectly: ')
         self.assertInHTML(
             expected_output['select_multiple'], output, msg_prefix='SelectMultiple rendered incorrectly: ')
         self.assertInHTML(expected_output['radio_select'], output, msg_prefix='RadioSelect rendered incorrectly: ')

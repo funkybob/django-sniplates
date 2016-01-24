@@ -137,7 +137,7 @@ Underscore prefixed to avoid potentially clashing with:
  - {widget}_{name}
  - {field}_{widget}
 {% block _Select_Option %}
-<option value="{{ val }}" {% if val == raw_value|default:None %}selected{% endif %}>{{ display }}</option>
+<option value="{{ val }}" {% if val == value|default:None %}selected{% endif %}>{{ display }}</option>
 {% endblock %}
 
 {% block Select %}
@@ -146,11 +146,11 @@ Underscore prefixed to avoid potentially clashing with:
     {% if choice.is_group %}
     <optgroup label="{{ choice.value }}">
         {% for val, display in choice.display %}
-            {% reuse '_Select_Option' val=val value=value display=display %}
+            {% reuse '_Select_Option' val=val value=raw_value display=display %}
         {% endfor %}
     </optgroup>
     {% else %}
-        {% reuse '_Select_Option' val=choice.value value=value display=choice.display %}
+        {% reuse '_Select_Option' val=choice.value value=raw_value display=choice.display %}
     {% endif %}
 {% endfor %}
 </select>

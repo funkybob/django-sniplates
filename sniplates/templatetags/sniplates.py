@@ -354,10 +354,36 @@ class ImageFieldExtractor(FileFieldExtractor):
             return self.value.height
 
 
+class NullBooleanFieldExtractor(FieldExtractor):
+
+    @cached_property
+    def raw_value(self):
+        """
+        When the value is None, it's actually rendered as '1', see
+        ``django.forms.widgets.NullBooleanSelect.render``
+        """
+        raw_value = super(NullBooleanFieldExtractor, self).raw_value
+        if raw_value is None:
+            return '1'
+        return raw_value
+
+    @cached_property
+    def choices(self):
+        c = self['widget'].choices
+        if not c:
+            return c
+
+        return tuple(
+            ChoiceWrapper(value=force_text(k), display=v)
+            for k, v in c
+        )
+
+
 # Map of field types to functions for extracting their data
 EXTRACTOR = {
     'FileField': FileFieldExtractor,
     'ImageField': ImageFieldExtractor,
+    'NullBooleanField': NullBooleanFieldExtractor,
 }
 
 
