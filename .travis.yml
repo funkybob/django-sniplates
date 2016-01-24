@@ -16,3 +16,8 @@ install:
 
 script:
   - python runtests.py
+
+matrix:
+  exclude:
+    - env: DJANGO="Django<1.10"
+      python: "3.3"
