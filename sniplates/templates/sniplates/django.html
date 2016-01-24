@@ -80,7 +80,7 @@ How to render errors
 <input type="{{ input_type }}"
     name="{{ html_name }}"
     id="{{ id }}"
-    value="{{ value|default:"" }}"
+    value="{{ raw_value|default:"" }}"
     class="{{ css_classes }} {{ errors|yesno:"error," }}"
     {{ widget.attrs|flatattrs }}
     {{ required|yesno:"required," }}
@@ -117,7 +117,7 @@ TODO:
 Fields not derived from InputField:
 
 {% block MultipleHiddenInput %}
-{% for value in value %}
+{% for value in raw_value %}
 <input type="hidden" name="{{ html_name }}" id="{{ id }}_{{ forloop.counter0 }}" value="{{ value|default:'' }}" {{ widget.attrs|flatattrs }} {{ required|yesno:"required," }}>
 {% endfor %}
 {% endblock %}
@@ -128,7 +128,7 @@ Fields not derived from InputField:
     {{ required|yesno:"required," }}
     {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
     {{ widget.attrs|flatattrs }}
->{{ value|default:'' }}</textarea>
+>{{ raw_value|default:'' }}</textarea>
 {% endblock %}
 
 
@@ -146,11 +146,11 @@ Underscore prefixed to avoid potentially clashing with:
     {% if choice.is_group %}
     <optgroup label="{{ choice.value }}">
         {% for val, display in choice.display %}
-            {% reuse '_Select_Option' val=val value=value display=display %}
+            {% reuse '_Select_Option' val=val value=raw_value display=display %}
         {% endfor %}
     </optgroup>
     {% else %}
-        {% reuse '_Select_Option' val=choice.value value=value display=choice.display %}
+        {% reuse '_Select_Option' val=choice.value value=raw_value display=choice.display %}
     {% endif %}
 {% endfor %}
 </select>

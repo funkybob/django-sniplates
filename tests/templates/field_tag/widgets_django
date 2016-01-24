@@ -1,0 +1,5 @@
+{% load sniplates %}
+{% load_widgets form="sniplates/django.html" %}
+{% for field in form %}
+{% form_field field %}
+{% endfor %}
