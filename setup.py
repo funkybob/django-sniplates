@@ -8,10 +8,10 @@ setup(
     author_email='curtis@tinbrain.net',
     url='http://github.com/funkybob/django-sniplates',
     keywords=['django', 'templates', 'forms'],
-    packages = find_packages(exclude=('tests*',)),
+    packages=find_packages(exclude=('tests*',)),
     include_package_data=True,
     zip_safe=False,
-    classifiers = [
+    classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
         'License :: OSI Approved :: BSD License',
@@ -20,12 +20,13 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
-    requires = [
+    requires=[
         'Django (>=1.7)',
     ],
-    install_requires = [
+    install_requires=[
         'Django>=1.7',
     ],
 )
