@@ -2,10 +2,21 @@
 Changelog
 =========
 
-0.3.3
------
+0.4.0 (2015-09-??)
+------------------
+
+.. note:: This app is no longer compatible with Django versions older than 1.6
+
+.. note:: The values in the `file` dict previously added by `form_field` are
+          now exploded directly into the context.
 
 Features:
+
+- Added pluggable FieldExploder classes
+- Added `raw_value` to Form Field exploded attributes
+- `choices` and `display` are now lazy
+
+Bugs Fixed:
 
 0.3.2
 -----

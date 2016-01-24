@@ -2,12 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-sniplates',
-    version='0.3.2',
+    version='0.4.0',
     description='Efficient template macro sets for Django',
     author='Curtis Maloney',
     author_email='curtis@tinbrain.net',
     url='http://github.com/funkybob/django-sniplates',
-    keywords=['django', 'templates',],
+    keywords=['django', 'templates', 'forms'],
     packages = find_packages(exclude=('tests*',)),
     include_package_data=True,
     zip_safe=False,
@@ -23,9 +23,9 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
     requires = [
-        'Django (>=1.4)',
+        'Django (>=1.7)',
     ],
     install_requires = [
-        'Django>=1.4',
+        'Django>=1.7',
     ],
 )

@@ -7,15 +7,6 @@ import sys
 from django.conf import settings
 from django.core.management import execute_from_command_line
 
-import django
-
-if django.VERSION < (1, 6):
-    extra_settings = {
-        'TEST_RUNNER': 'discover_runner.DiscoverRunner',
-    }
-else:
-    extra_settings = {}
-
 
 if not settings.configured:
     settings.configure(
@@ -29,7 +20,6 @@ if not settings.configured:
             'tests',
         ),
         MIDDLEWARE_CLASSES=[],
-        **extra_settings
     )
 
 

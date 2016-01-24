@@ -48,6 +48,24 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 opt,
             ) in output)
 
+    def test_choices_multi2(self):
+        """
+        Edge case where one choice value is a substring of another choice value.
+        """
+
+        tmpl = get_template('choices_multi2')
+        selected = [11, 22]
+        self.ctx['form'] = TestForm(initial={'many2': selected})
+        output = tmpl.render(self.ctx)
+
+        for idx, opt in ((1, 'a'), (11, 'b'), (22, 'c')):
+            expected = '<option value="{}" {}>{}'.format(
+                idx,
+                'selected' if idx in selected else '',
+                opt,
+            )
+            self.assertTrue(expected in output, 'Expected %s' % expected)
+
     def test_widget_override(self):
         tmpl = get_template('override')
         output = tmpl.render(self.ctx)

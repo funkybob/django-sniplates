@@ -25,6 +25,7 @@ Contents:
 
    tags
    filters
+   extractor
    changelog
    formulation
 
