@@ -1,0 +1,9 @@
+[run]
+branch = True
+source = sniplates
+
+[report]
+omit = */migrations/*,*/tests/*
+exclude_lines =
+    pragma: no cover
+    noqa

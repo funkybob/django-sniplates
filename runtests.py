@@ -1,32 +1,38 @@
 #!/usr/bin/env python
-
-# Adapted from https://raw.githubusercontent.com/hzy/django-polarize/master/runtests.py
-
+import os
 import sys
 
-from django.conf import settings
-from django.core.management import execute_from_command_line
 
+def runtests(args=None):
+    test_dir = os.path.dirname(__file__)
+    sys.path.insert(0, test_dir)
 
-if not settings.configured:
-    settings.configure(
-        DATABASES={
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-            }
-        },
-        INSTALLED_APPS=(
-            'sniplates',
-            'tests',
-        ),
-        MIDDLEWARE_CLASSES=[],
-    )
+    import django
+    from django.test.utils import get_runner
+    from django.conf import settings
 
+    if not settings.configured:
+        settings.configure(
+            DATABASES={
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                }
+            },
+            INSTALLED_APPS=(
+                'sniplates',
+                'tests',
+            ),
+            MIDDLEWARE_CLASSES=[],
+        )
 
-def runtests():
-    argv = sys.argv[:1] + ['test', 'tests']
-    execute_from_command_line(argv)
+    django.setup()
+
+    TestRunner = get_runner(settings)
+    test_runner = TestRunner(verbosity=1, interactive=True)
+    args = args or ['.']
+    failures = test_runner.run_tests(args)
+    sys.exit(failures)
 
 
 if __name__ == '__main__':
-    runtests()
+    runtests(sys.argv[1:])
