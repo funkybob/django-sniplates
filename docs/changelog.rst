@@ -2,7 +2,23 @@
 Changelog
 =========
 
-0.4.0 (2016-01-??)
+0.4.1 (2016-01-25)
+------------------
+
+Features:
+
+- Fixed default django.html template to use raw_value [Sergei Maertens]
+- Added NullBooleanFieldExtractor
+
+Bugs Fixed;
+
+- Made choices lazy again - regression in 0.4 merge [Sergei Maertens]
+
+Testing:
+
+- Switched to having travis use tox [Sergei Maertens]
+
+0.4.0 (2016-01-24)
 ------------------
 
 .. note:: This app is no longer compatible with Django versions older than 1.6
