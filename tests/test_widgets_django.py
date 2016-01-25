@@ -80,6 +80,9 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                     <li><input name="checkbox_select_multiple" type="checkbox"
                         id="id_checkbox_select_multiple_2" value="22">c</li>
                 </ul>''',
+            'file': '<input id="id_file" name="file" type="file" value="" class=" " required>',
+            'clearable_file': '''
+                <input id="id_clearable_file" name="clearable_file" type="file" value="" class=" " required>''',
         }
 
         self.assertInHTML(expected_output['char'], output, msg_prefix='TextInput rendered incorrectly: ')
@@ -108,3 +111,4 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             expected_output['checkbox_select_multiple'], output,
             msg_prefix='CheckboxSelectMultiple rendered incorrectly: '
         )
+        self.assertInHTML(expected_output['file'], output, msg_prefix='FileInput rendered incorrectly: ')

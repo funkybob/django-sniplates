@@ -32,4 +32,7 @@ class DjangoWidgetsForm(forms.Form):
         choices=((1, 'a'), (11, 'b'), (22, 'c')),
         widget=forms.CheckboxSelectMultiple
     )
+
+    file = forms.FileField(widget=forms.FileInput)
+    clearable_file = forms.FileField()
     # TODO: clearableFileInput, FileInput, Split(Hidden)DateTimeWidget
