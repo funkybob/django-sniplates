@@ -130,7 +130,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             'time': [datetime.time(8, 9)],
             'text': ['Lorem ipsum...'],
             'checkbox': [True],
-            'select': '22',
+            'select': ['22'],
             'null_boolean_select': [False],
             'select_multiple': ['11', '22', 1],
             'radio_select': ['11'],
@@ -168,7 +168,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 </select>''',
             'null_boolean_select': '''
                 <select id="id_null_boolean_select" name="null_boolean_select">
-                <option value="1" selected="selected">Unknown</option>
+                <option value="1">Unknown</option>
                 <option value="2">Yes</option>
                 <option value="3" selected>No</option>
                 </select>''',
@@ -209,6 +209,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         self.assertInHTML(expected['text'], output)
         self.assertInHTML(expected['checkbox'], output)
 
+        self.assertInHTML(expected['select'], output)
+        self.assertInHTML(expected['null_boolean_select'], output)
         self.assertInHTML(expected['select_multiple'], output)
         self.assertInHTML(expected['radio_select'], output)
         self.assertInHTML(expected['checkbox_select_multiple'], output)
@@ -219,5 +221,3 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         self.assertInHTML(expected['date'], output)
         self.assertInHTML(expected['datetime'], output)
         self.assertInHTML(expected['time'], output)
-        self.assertInHTML(expected['select'], output)
-        self.assertInHTML(expected['null_boolean_select'], output)

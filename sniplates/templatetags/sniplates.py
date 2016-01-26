@@ -368,6 +368,18 @@ class NullBooleanFieldExtractor(FieldExtractor):
         return raw_value
 
     @cached_property
+    def value(self):
+        """
+        Maps True/False and 2/3 to the correct stringified version.
+
+        See ``django.forms.widgets.NullBooleanSelect.render``.
+        """
+        try:
+            return {True: '2', False: '3', '2': '2', '3': '3'}[self.raw_value]
+        except KeyError:
+            return '1'
+
+    @cached_property
     def choices(self):
         c = self['widget'].choices
         if not c:
