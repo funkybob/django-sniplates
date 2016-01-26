@@ -96,9 +96,9 @@ How to render errors
 {% block PasswordInput %}{% reuse "input" input_type="password" value="" %}{% endblock %}
 {% block HiddenInput %}{% reuse "input" input_type="hidden" label="" %}{% endblock %}
 {% block FileInput %}{% reuse "input" input_type="file" value="" %}{% endblock %}
-{% block DateInput %}{% reuse "input" input_type="date" value=value|date:'Y-m-d' %}{% endblock %}
-{% block DateTimeInput %}{% reuse "input" input_type="datetime" value=value|date:'Y-m-d H:i:s' %}{% endblock %}
-{% block TimeInput %}{% reuse "input" input_type="time" value=value|date:'H:i:s' %}{% endblock %}
+{% block DateInput %}{% reuse "input" input_type="date" raw_value=value %}{% endblock %}
+{% block DateTimeInput %}{% reuse "input" input_type="datetime" raw_value=value %}{% endblock %}
+{% block TimeInput %}{% reuse "input" input_type="time" raw_value=value %}{% endblock %}
 
 {% block ClearableFileInput %}
 {% if file %}

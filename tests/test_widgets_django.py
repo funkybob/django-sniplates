@@ -217,7 +217,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         # self.assertInHTML(expected['file'], output)
         # self.assertInHTML(expected['clearable_file'], output)
 
-        # failing checks: FIXME
+        # DateTime based
         self.assertInHTML(expected['date'], output)
         self.assertInHTML(expected['datetime'], output)
         self.assertInHTML(expected['time'], output)

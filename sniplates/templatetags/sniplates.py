@@ -1,8 +1,9 @@
 from collections import namedtuple
 from contextlib import contextmanager
 
-from django.forms.utils import flatatt
 from django import template
+from django.forms.utils import flatatt
+from django.forms.widgets import DateTimeBaseInput
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import (
@@ -391,11 +392,27 @@ class NullBooleanFieldExtractor(FieldExtractor):
         )
 
 
+class DateTimeBaseExtractor(FieldExtractor):
+    """
+    Applies the date/time/datetime formatting to the value.
+    """
+
+    @cached_property
+    def value(self):
+        if isinstance(self['widget'], DateTimeBaseInput):
+            return self['widget']._format_value(self.raw_value)
+        # if it's a different widget, fall back to the default
+        return super(DateTimeBaseExtractor, self).value
+
+
 # Map of field types to functions for extracting their data
 EXTRACTOR = {
     'FileField': FileFieldExtractor,
     'ImageField': ImageFieldExtractor,
     'NullBooleanField': NullBooleanFieldExtractor,
+    'DateField': DateTimeBaseExtractor,
+    'DateTimeField': DateTimeBaseExtractor,
+    'TimeField': DateTimeBaseExtractor,
 }
 
 
