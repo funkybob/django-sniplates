@@ -136,7 +136,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             'select_multiple': ['11', '22', 1],
             'radio_select': ['11'],
             'checkbox_select_multiple': ['1', 11],
-            # TODO: file/clearable_file
+            'file': ['not-a-suspicious-file.exe'],
+            'clearable_file': ['also-not-a-suspicious-file.exe'],
         }))
         tmpl = get_template('widgets_django')
         output = tmpl.render(self.ctx)
@@ -194,9 +195,10 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                     <li><input name="checkbox_select_multiple" type="checkbox"
                         id="id_checkbox_select_multiple_2" value="22">c</li>
                 </ul>''',
-            'file': '<input id="id_file" name="file" type="file" value="" class=" " required>',
+            # file inputs never show the value, the old value is of no use [see django.forms tests]
+            'file': '<input id="id_file" name="file" type="file" value="" class=" error" required>',
             'clearable_file': '''
-                <input id="id_clearable_file" name="clearable_file" type="file" value="" class=" " required>''',
+                <input id="id_clearable_file" name="clearable_file" type="file" value="" class=" error" required>''',
         }
 
         self.assertInHTML(expected['char'], output)
@@ -215,8 +217,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         self.assertInHTML(expected['select_multiple'], output)
         self.assertInHTML(expected['radio_select'], output)
         self.assertInHTML(expected['checkbox_select_multiple'], output)
-        # self.assertInHTML(expected['file'], output)
-        # self.assertInHTML(expected['clearable_file'], output)
+        self.assertInHTML(expected['file'], output)
+        self.assertInHTML(expected['clearable_file'], output)
 
         # DateTime based
         self.assertInHTML(expected['date'], output)
@@ -237,3 +239,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             output,
             '<input type="date" name="date" id="id_date" value="03-2016-27" class=" " required>'
         )
+
+    # def test_filefield_extractor(self):
+    #     """
+    #     TODO: test that the clearable file input is properly rendered.
+    #     """
