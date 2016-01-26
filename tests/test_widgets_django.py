@@ -3,6 +3,7 @@ Tests for all shipped sniplates/django.html widgets.
 """
 import datetime
 
+from django import forms
 from django.template.loader import get_template
 from django.test import SimpleTestCase, override_settings
 from django.utils.datastructures import MultiValueDict
@@ -221,3 +222,18 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         self.assertInHTML(expected['date'], output)
         self.assertInHTML(expected['datetime'], output)
         self.assertInHTML(expected['time'], output)
+
+    def test_date_input_different_format(self):
+        """
+        Tests that the ``django.forms`` configured input format is respected.
+        """
+        class Form(forms.Form):
+            date = forms.DateField(widget=forms.DateInput(format='%m-%Y-%d'))
+
+        self.ctx['form'] = Form(initial={'date': datetime.date(2016, 3, 27)})
+        tmpl = get_template('widgets_django')
+        output = tmpl.render(self.ctx)
+        self.assertHTMLEqual(
+            output,
+            '<input type="date" name="date" id="id_date" value="03-2016-27" class=" " required>'
+        )
