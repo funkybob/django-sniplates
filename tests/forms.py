@@ -36,3 +36,7 @@ class DjangoWidgetsForm(forms.Form):
     file = forms.FileField(widget=forms.FileInput)
     clearable_file = forms.FileField()
     # TODO: clearableFileInput, FileInput, Split(Hidden)DateTimeWidget
+
+
+class FilesForm(forms.Form):
+    clearable_file = forms.FileField()
