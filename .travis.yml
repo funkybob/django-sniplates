@@ -2,6 +2,7 @@ sudo: false
 language: python
 install:
   - pip install coverage codecov coveralls tox
+  - pip install git+https://github.com/nedbat/django_coverage_plugin.git@master
 addons:
   apt:
     sources:
@@ -11,8 +12,10 @@ addons:
 script:
   - tox
 after_success:
-  - coveralls
+  # the settings module env var is required for coverage report generation only
+  - export DJANGO_SETTINGS_MODULE=tests.report_settings PYTHONPATH=.
   - codecov
+  - coveralls
 env:
   - TOXENV=py27-django17
   - TOXENV=py27-django18
