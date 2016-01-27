@@ -8,7 +8,6 @@ from django.template.loader import get_template
 from django.test import SimpleTestCase, override_settings
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.datastructures import MultiValueDict
-from django.utils.translation import ugettext as _
 
 from .forms import DjangoWidgetsForm, FilesForm
 from .utils import TemplateTestMixin, template_path
@@ -263,16 +262,11 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         self.ctx['form'] = FilesForm(initial={'clearable_file': FakeFieldFile()})
         tmpl = get_template('widgets_django')
         output = tmpl.render(self.ctx)
-
         self.assertHTMLEqual(
             output, '''
-            {currently}: <a href="something">something</a>
+            Currently: <a href="something">something</a>
             <input type="checkbox" name="clearable_file-clear" id="clearable_file-clear_id" />
-            <label for="clearable_file-clear_id">{clear}</label><br />
-            {change}: <input id="id_clearable_file" name="clearable_file" type="file" class=" " required />
-            '''.format(
-                currently=_('Currently'),
-                change=_('Change'),
-                clear=_('Clear'),
-            )
+            <label for="clearable_file-clear_id">Clear</label><br />
+            Change: <input id="id_clearable_file" name="clearable_file" type="file" class=" " value="" required />
+            '''
         )
