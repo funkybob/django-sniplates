@@ -333,13 +333,13 @@ class FileFieldExtractor(FieldExtractor):
 
     @cached_property
     def file_size(self):
-        if self.value:
-            return self.value.size
+        if self.raw_alue:
+            return self.raw_value.size
 
     @cached_property
     def url(self):
-        if self.value:
-            return self.value.url
+        if self.raw_value:
+            return self.raw_value.url
 
 
 class ImageFieldExtractor(FileFieldExtractor):
