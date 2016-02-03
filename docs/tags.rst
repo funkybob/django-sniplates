@@ -42,7 +42,7 @@ the `only` argument.
 The name is composed of the alias specified in the `load_widgets` tag, and the
 name of the block in that template, joined with a ':'. If you use an "empty"
 alias, the block will be searched for in the current template (and any
-templates it extends).  This form can be used without a `load_widgets` tage.
+templates it extends).  This form can be used without a `load_widgets` tag.
 
 You may use the `as` form of the tag to store the result of the block in the
 context variable you supply instead of rendering it in the template.
