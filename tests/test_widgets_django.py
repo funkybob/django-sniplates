@@ -6,10 +6,25 @@ import datetime
 from django import forms
 from django.template.loader import get_template
 from django.test import SimpleTestCase, override_settings
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.datastructures import MultiValueDict
 
-from .forms import DjangoWidgetsForm
+from .forms import DjangoWidgetsForm, FilesForm
 from .utils import TemplateTestMixin, template_path
+
+
+@python_2_unicode_compatible
+class FakeFieldFile(object):
+    """
+    Quacks like a FieldFile (has a .url and unicode representation), but
+    doesn't require us to care about storages etc.
+
+    Taken from django.tests.forms_tests.test.test_widgets.
+    """
+    url = 'something'
+
+    def __str__(self):
+        return self.url
 
 
 @override_settings(TEMPLATE_DIRS=[template_path('field_tag')])
@@ -240,7 +255,18 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             '<input type="date" name="date" id="id_date" value="03-2016-27" class=" " required>'
         )
 
-    # def test_filefield_extractor(self):
-    #     """
-    #     TODO: test that the clearable file input is properly rendered.
-    #     """
+    def test_filefield_extractor(self):
+        """
+        Assert that the clearable file input is properly rendered.
+        """
+        self.ctx['form'] = FilesForm(initial={'clearable_file': FakeFieldFile()})
+        tmpl = get_template('widgets_django')
+        output = tmpl.render(self.ctx)
+        self.assertHTMLEqual(
+            output, '''
+            Currently: <a href="something">something</a>
+            <input type="checkbox" name="clearable_file-clear" id="clearable_file-clear_id" />
+            <label for="clearable_file-clear_id">Clear</label><br />
+            Change: <input id="id_clearable_file" name="clearable_file" type="file" class=" " value="" required />
+            '''
+        )

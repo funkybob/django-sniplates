@@ -2,6 +2,8 @@
 import os
 import sys
 
+import coverage
+
 
 def runtests(args=None):
     test_dir = os.path.dirname(__file__)
@@ -23,14 +25,22 @@ def runtests(args=None):
                 'tests',
             ),
             MIDDLEWARE_CLASSES=[],
+            TEMPLATE_DEBUG=True,  # required for coverage plugin
         )
 
     django.setup()
+
+    cov = coverage.Coverage()
+    cov.start()
 
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=1, interactive=True)
     args = args or ['.']
     failures = test_runner.run_tests(args)
+
+    cov.stop()
+    cov.save()
+
     sys.exit(failures)
 
 

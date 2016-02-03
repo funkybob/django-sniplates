@@ -1,4 +1,4 @@
-{% load sniplates %}
+{% load i18n sniplates %}
 Default, basic form rendering
 
 # Built in fields:
@@ -101,12 +101,13 @@ How to render errors
 {% block TimeInput %}{% reuse "input" input_type="time" raw_value=value %}{% endblock %}
 
 {% block ClearableFileInput %}
-{% if file %}
-    Currently: <a href="{{ file.url }}">{{ file.url }}</a>
-    <br>
-    Change:
+{% if raw_value %}
+    {% trans "Currently" %}: <a href="{{ url }}">{{ url }}</a>
+    <input type="checkbox" name="{{ html_name }}-clear" id="{{ html_name }}-clear_id">
+    <label for="{{ html_name }}-clear_id">{% trans "Clear" %}</label><br>
+    {% trans "Change" %}:
 {% endif %}
-{% reuse "input" input_type="file" value="" %}
+{% reuse "input" input_type="file" raw_value="" %}
 {% endblock %}
 
 TODO:
