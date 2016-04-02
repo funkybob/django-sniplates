@@ -24,6 +24,10 @@ class DjangoWidgetsForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
     checkbox = forms.BooleanField()
     select = forms.ChoiceField(choices=((1, 'a'), (11, 'b'), (22, 'c')))
+    optgroup_select = forms.ChoiceField(choices=(
+        ('label1', [(1, 'a'), (11, 'b')]),
+        ('label2', [(22, 'c')])
+    ))
     null_boolean_select = forms.NullBooleanField()
     select_multiple = forms.MultipleChoiceField(choices=((1, 'a'), (11, 'b'), (22, 'c')))
     radio_select = forms.ChoiceField(choices=((1, 'a'), (11, 'b'), (22, 'c')),

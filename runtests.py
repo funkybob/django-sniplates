@@ -40,6 +40,8 @@ def runtests(args=None):
 
     cov.stop()
     cov.save()
+    if os.getenv('HTML_REPORT'):
+        cov.html_report()
 
     sys.exit(failures)
 
