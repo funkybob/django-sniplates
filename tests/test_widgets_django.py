@@ -69,6 +69,16 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 <option value="11">b</option>
                 <option value="22">c</option>
                 </select>''',
+            'optgroup_select': '''
+                <select id="id_optgroup_select" name="optgroup_select">
+                    <optgroup label="label1">
+                        <option value="1">a</option>
+                        <option value="11">b</option>
+                    </optgroup>
+                    <optgroup label="label2">
+                        <option value="22">c</option>
+                    </optgroup>
+                </select>''',
             'null_boolean_select': '''
                 <select id="id_null_boolean_select" name="null_boolean_select">
                 <option value="1" selected="selected">Unknown</option>
@@ -118,6 +128,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
         # all kind of selects
         self.assertInHTML(expected_output['select'], output, msg_prefix='Select rendered incorrectly: ')
+        self.assertInHTML(
+            expected_output['optgroup_select'], output, msg_prefix='Select with optgroups rendered incorrectly: ')
         self.assertInHTML(
             expected_output['null_boolean_select'], output, msg_prefix='NullBooleanSelect rendered incorrectly: ')
         self.assertInHTML(
