@@ -159,6 +159,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             'text': ['Lorem ipsum...'],
             'checkbox': [True],
             'select': ['22'],
+            'optgroup_select': ['22'],
             'null_boolean_select': [False],
             'select_multiple': ['11', '22', 1],
             'radio_select': ['11'],
@@ -194,6 +195,16 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 <option value="1">a</option>
                 <option value="11">b</option>
                 <option value="22" selected>c</option>
+                </select>''',
+            'optgroup_select': '''
+                <select id="id_optgroup_select" name="optgroup_select">
+                    <optgroup label="label1">
+                        <option value="1">a</option>
+                        <option value="11">b</option>
+                    </optgroup>
+                    <optgroup label="label2">
+                        <option value="22" selected>c</option>
+                    </optgroup>
                 </select>''',
             'null_boolean_select': '''
                 <select id="id_null_boolean_select" name="null_boolean_select">
@@ -240,6 +251,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         self.assertInHTML(expected['checkbox'], output)
 
         self.assertInHTML(expected['select'], output)
+        self.assertInHTML(expected['optgroup_select'], output)
         self.assertInHTML(expected['null_boolean_select'], output)
         self.assertInHTML(expected['select_multiple'], output)
         self.assertInHTML(expected['radio_select'], output)
