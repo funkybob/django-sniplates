@@ -268,9 +268,30 @@ def nested_widget(parser, token):
     return NestedWidget(widget, nodelist, kwargs, asvar)
 
 
-class ChoiceWrapper(namedtuple('ChoiceWrapper', 'value display')):
+class ChoiceWrapper(object):
+
+    def __init__(self, value, display):
+        self.value = force_text(value)
+        self._display = display
+
+    def __repr__(self):
+        return 'ChoiceWrapper(value=%s, display=%s)' % (self.value, self.display)
+
+    def __iter__(self):
+        yield self.value
+        yield self.display
+
     def is_group(self):
-        return isinstance(self.display, (list, tuple))
+        return isinstance(self._display, (list, tuple))
+
+    @property
+    def display(self):
+        """
+        When dealing with optgroups, ensure that the value is properly force_text'd.
+        """
+        if not self.is_group():
+            return self._display
+        return ((force_text(k), v) for k, v in self._display)
 
 
 class FieldExtractor(dict):
@@ -322,9 +343,8 @@ class FieldExtractor(dict):
         c = self.form_field.field.choices
         if not c:
             return c
-
         return tuple(
-            ChoiceWrapper(value=force_text(k), display=v)
+            ChoiceWrapper(value=k, display=v)
             for k, v in self.form_field.field.choices
         )
 
