@@ -145,13 +145,23 @@ An example use of this is for wrapping fields in a fieldset template:
 
 .. code-block:: django
 
+   {% block fieldset %}
+       <fieldset>
+       {% if caption %}<caption>{{ caption }}</caption>{% endif %}
+       {{ content }}
+   {% endblock %}
+
+And would be used as follows:
+
+.. code-block:: django
+
     {% nested_widget 'form:fieldset' caption="About You" %}
         {% form_field form.first_name %} <br>
         {% form_field form.last_name %}
     {% endnested %}
 
 This tag also supports storing the result in a context variable of your choice
-instead of rendering.
+instead of rendering immediately.
 
 
 The `reuse` tag
