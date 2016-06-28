@@ -2,6 +2,19 @@
 Changelog
 =========
 
+0.4.2 (2016-??-??)
+------------------
+
+Features:
+
+- Add coverage to runtests.py
+- Added `initial` property to FieldExtractor
+- Added Extractors for date, datetime and time fields [Sergei Maertens]
+
+Bugs Fixed:
+
+- Rewrote ChoiceWrapper [Sergei Maertens]
+
 0.4.1 (2016-01-25)
 ------------------
 
