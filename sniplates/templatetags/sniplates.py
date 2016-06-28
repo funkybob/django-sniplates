@@ -1,4 +1,4 @@
-from collections import namedtuple
+import datetime
 from contextlib import contextmanager
 
 from django import template
@@ -6,9 +6,7 @@ from django.forms.utils import flatatt
 from django.forms.widgets import DateTimeBaseInput
 from django.template.base import token_kwargs
 from django.template.loader import get_template
-from django.template.loader_tags import (
-    BlockNode, ExtendsNode, BlockContext, BLOCK_CONTEXT_KEY,
-)
+from django.template.loader_tags import BLOCK_CONTEXT_KEY, BlockContext, BlockNode, ExtendsNode
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.functional import cached_property
@@ -49,10 +47,10 @@ def resolve_blocks(template, context):
     template = getattr(template, 'template', template)
 
     # Add this templates blocks as the first
-    local_blocks = dict(
-        (block.name, block)
+    local_blocks = {
+        block.name: block
         for block in template.nodelist.get_nodes_by_type(BlockNode)
-    )
+    }
     blocks.add_blocks(local_blocks)
 
     # Do we extend a parent template?
@@ -75,9 +73,7 @@ def parse_widget_name(widget):
     try:
         alias, block_name = widget.split(':', 1)
     except ValueError:
-        raise template.TemplateSyntaxError(
-            'widget name must be "alias:block_name" - %s' % widget
-        )
+        raise template.TemplateSyntaxError('widget name must be "alias:block_name" - %s' % widget)
 
     return alias, block_name
 
@@ -100,9 +96,7 @@ def using(context, alias):
         try:
             block_set = widgets[alias]
         except KeyError:
-            raise template.TemplateSyntaxError(
-                'No widget library loaded for alias: %r' % alias
-            )
+            raise template.TemplateSyntaxError('No widget library loaded for alias: %r' % alias)
 
         context.render_context.push()
         context.render_context[BLOCK_CONTEXT_KEY] = block_set
@@ -123,9 +117,7 @@ def find_block(context, *names):
         if block is not None:
             return block
 
-    raise template.TemplateSyntaxError(
-        'No widget found for: %r' % (names,)
-    )
+    raise template.TemplateSyntaxError('No widget found for: %r' % (names,))
 
 
 @register.simple_tag(takes_context=True)
@@ -194,17 +186,13 @@ def widget(parser, token):
     try:
         widget = parser.compile_filter(bits.pop(0))
     except IndexError:
-        raise template.TemplateSyntaxError(
-            '%s requires one positional argument' % tag_name
-        )
+        raise template.TemplateSyntaxError('%s requires one positional argument' % tag_name)
 
     asvar = pop_asvar(bits)
 
     kwargs = token_kwargs(bits, parser)
     if bits:
-        raise template.TemplateSyntaxError(
-            '%s accepts only one positional argument' % tag_name
-        )
+        raise template.TemplateSyntaxError('%s accepts only one positional argument' % tag_name)
 
     return Widget(widget, kwargs, asvar)
 
@@ -249,18 +237,14 @@ def nested_widget(parser, token):
     try:
         widget = parser.compile_filter(bits.pop(0))
     except IndexError:
-        raise template.TemplateSyntaxError(
-            '%s requires one positional argument' % tag_name
-        )
+        raise template.TemplateSyntaxError('%s requires one positional argument' % tag_name)
 
     asvar = pop_asvar(bits)
 
     kwargs = token_kwargs(bits, parser)
 
     if bits:
-        raise template.TemplateSyntaxError(
-            '%s accepts only one positional argument' % tag_name
-        )
+        raise template.TemplateSyntaxError('%s accepts only one positional argument' % tag_name)
 
     nodelist = parser.parse(('endnested',))
     parser.delete_first_token()
@@ -307,8 +291,9 @@ class FieldExtractor(dict):
             'field_type': field.field.__class__.__name__,
         })
 
-        for attr in ('css_classes', 'errors', 'field', 'form', 'help_text',
-                     'html_name', 'id_for_label', 'label', 'name',):
+        for attr in (
+            'css_classes', 'errors', 'field', 'form', 'help_text', 'html_name', 'id_for_label', 'label', 'name',
+        ):
             self[attr] = getattr(field, attr)
 
         for attr in ('widget', 'required'):
@@ -334,6 +319,20 @@ class FieldExtractor(dict):
         return force_text(self.raw_value)
 
     @cached_property
+    def initial(self):
+        data = self.form_field.form.initial.get(self.form_field.name, self.form_field.field.initial)
+        if callable(data):
+            data = data()
+            # If this is an auto-generated default date, nix the
+            # microseconds for standardized handling. See #22502.
+            if (
+                isinstance(data, (datetime.datetime, datetime.time)) and
+                not self.field.widget.supports_microseconds
+            ):
+                data = data.replace(microsecond=0)
+        return self.form_field.field.prepare_value(data)
+
+    @cached_property
     def display(self):
         '''Display value for selected choice.'''
         return dict(self.choices).get(self.value, '')
@@ -353,7 +352,7 @@ class FileFieldExtractor(FieldExtractor):
 
     @cached_property
     def file_size(self):
-        if self.raw_alue:
+        if self.raw_value:
             return self.raw_value.size
 
     @cached_property
