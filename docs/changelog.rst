@@ -13,7 +13,7 @@ Features:
 
 Bugs Fixed:
 
-- Rewrote ChoiceWrapper [Sergei Maertens]
+- Rewrote ChoiceWrapper [kezabelle with help from Sergei Maertens]
 
 0.4.1 (2016-01-25)
 ------------------
