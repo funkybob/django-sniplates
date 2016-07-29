@@ -1,4 +1,5 @@
 
+from django.template import TemplateSyntaxError
 from django.template.loader import get_template
 from django.test import SimpleTestCase, override_settings
 
@@ -77,3 +78,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
 
         self.assertTrue('type="dummy"' in output)
+
+    def test_empty_fiend(self):
+        tmpl = get_template('empty_field')
+        with self.assertRaises(TemplateSyntaxError):
+            output = tmpl.render(self.ctx)

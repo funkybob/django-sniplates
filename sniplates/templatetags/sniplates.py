@@ -437,6 +437,9 @@ EXTRACTOR = {
 
 @register.simple_tag(takes_context=True)
 def form_field(context, field, widget=None, **kwargs):
+    if not field:
+        raise template.TemplateSyntaxError('form_field requires a value field as first argument')
+
     if widget is None:
         alias = kwargs.pop('alias', 'form')
 
