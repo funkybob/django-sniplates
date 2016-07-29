@@ -14,6 +14,8 @@ Features:
 Bugs Fixed:
 
 - Rewrote ChoiceWrapper [kezabelle with help from Sergei Maertens]
+- Raise TemplateSyntaxError when falsey value passed to {% form_field %}
+  [kezzabelle]
 
 0.4.1 (2016-01-25)
 ------------------
