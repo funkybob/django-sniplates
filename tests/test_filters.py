@@ -1,12 +1,10 @@
 from collections import OrderedDict
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 from django.template.loader import get_template
-from .utils import TemplateTestMixin, template_path
+from .utils import TemplateTestMixin, template_dirs
 
 
-@override_settings(
-    TEMPLATE_DIRS=[template_path('filters')],
-)
+@template_dirs('filters')
 class TestFilters(TemplateTestMixin, SimpleTestCase):
 
     def test_flatattrs(self):

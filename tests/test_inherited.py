@@ -1,13 +1,11 @@
 from django.template import TemplateSyntaxError
 from django.template.loader import get_template
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 
-from .utils import TemplateTestMixin, template_path
+from .utils import TemplateTestMixin, template_dirs
 
 
-@override_settings(
-    TEMPLATE_DIRS=[template_path('inheritance')],
-)
+@template_dirs('inheritance')
 class TestInheritance(TemplateTestMixin, SimpleTestCase):
 
     def test_block_overlap(self):

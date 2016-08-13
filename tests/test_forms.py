@@ -1,15 +1,13 @@
 
 from django.template import TemplateSyntaxError
 from django.template.loader import get_template
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 
 from .forms import TestForm
-from .utils import TemplateTestMixin, template_path
+from .utils import TemplateTestMixin, template_dirs
 
 
-@override_settings(
-    TEMPLATE_DIRS=[template_path('field_tag')],
-)
+@template_dirs('field_tag')
 class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
     def setUp(self):

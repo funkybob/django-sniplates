@@ -1,14 +1,12 @@
 
 from django.template import TemplateSyntaxError
 from django.template.loader import get_template
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 
-from .utils import TemplateTestMixin, template_path
+from .utils import TemplateTestMixin, template_dirs
 
 
-@override_settings(
-    TEMPLATE_DIRS=[template_path('load_widgets')],
-)
+@template_dirs('load_widgets')
 class TestLoadWidgets(TemplateTestMixin, SimpleTestCase):
 
     def test_load_widgets(self):
@@ -30,9 +28,7 @@ class TestLoadWidgets(TemplateTestMixin, SimpleTestCase):
         self.assertEqual(output, 'success<=>winning\n')
 
 
-@override_settings(
-    TEMPLATE_DIRS=[template_path('invalid')],
-)
+@template_dirs('invalid')
 class TestInvalid(TemplateTestMixin, SimpleTestCase):
 
     def test_bad_name(self):
@@ -56,9 +52,7 @@ class TestInvalid(TemplateTestMixin, SimpleTestCase):
             tmpl.render(self.ctx)
 
 
-@override_settings(
-    TEMPLATE_DIRS=[template_path('widget_tag')],
-)
+@template_dirs('widget_tag')
 class TestWidgetTag(TemplateTestMixin, SimpleTestCase):
 
     def test_fixed(self):

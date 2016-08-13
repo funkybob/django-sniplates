@@ -1,13 +1,11 @@
 
 from django.template.loader import get_template
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 
-from .utils import TemplateTestMixin, template_path
+from .utils import TemplateTestMixin, template_dirs
 
 
-@override_settings(
-    TEMPLATE_DIRS=[template_path('reuse')],
-)
+@template_dirs('reuse')
 class TestReuse(TemplateTestMixin, SimpleTestCase):
 
     def test_reuse(self):
@@ -33,4 +31,7 @@ class TestReuse(TemplateTestMixin, SimpleTestCase):
         Widget templates want to reuse their own blocks.
         '''
         tmpl = get_template('inwidget')
-        output = tmpl.render(self.ctx)
+        try:
+            tmpl.render(self.ctx)
+        except:
+            self.fail('{% reuse %} failure')
