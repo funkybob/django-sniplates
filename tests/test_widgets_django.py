@@ -5,12 +5,12 @@ import datetime
 
 from django import forms
 from django.template.loader import get_template
-from django.test import SimpleTestCase, override_settings
+from django.test import SimpleTestCase
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.datastructures import MultiValueDict
 
 from .forms import DjangoWidgetsForm, FilesForm
-from .utils import TemplateTestMixin, template_path
+from .utils import TemplateTestMixin, template_dirs
 
 
 @python_2_unicode_compatible
@@ -27,7 +27,7 @@ class FakeFieldFile(object):
         return self.url
 
 
-@override_settings(TEMPLATE_DIRS=[template_path('field_tag')])
+@template_dirs('field_tag')
 class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
     def test_widgets_unbound(self):

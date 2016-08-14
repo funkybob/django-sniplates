@@ -43,7 +43,7 @@ an arsenal of template macros.
 Requirements
 ------------
 
-Requires Django 1.7 or newer, and is tested against Python 2.7, 3.3, 3.4, 3.5 and
+Requires Django 1.8 or newer, and is tested against Python 2.7, 3.3, 3.4, 3.5 and
 PyPy.
 
 Quick-start

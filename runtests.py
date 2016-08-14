@@ -25,7 +25,16 @@ def runtests(args=None):
                 'tests',
             ),
             MIDDLEWARE_CLASSES=[],
-            TEMPLATE_DEBUG=True,  # required for coverage plugin
+            TEMPLATES=[
+                {
+                    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+                    'DIRS': [],
+                    'APP_DIRS': True,
+                    'OPTIONS': {
+                        'debug': True
+                    }
+                },
+            ]
         )
 
     django.setup()

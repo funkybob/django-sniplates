@@ -252,7 +252,11 @@ def nested_widget(parser, token):
     return NestedWidget(widget, nodelist, kwargs, asvar)
 
 
-class ChoiceWrapper(object):
+class ChoiceWrapper(tuple):
+
+    def __new__(cls, value=None, display=None):
+        tuple_args = [value, display]
+        return super(ChoiceWrapper, cls).__new__(cls, tuple(tuple_args))
 
     def __init__(self, value, display):
         self.value = force_text(value)
@@ -262,6 +266,7 @@ class ChoiceWrapper(object):
         return 'ChoiceWrapper(value=%s, display=%s)' % (self.value, self.display)
 
     def __iter__(self):
+        # overriden from tuple to retrun the formatted display
         yield self.value
         yield self.display
 
