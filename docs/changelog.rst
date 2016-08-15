@@ -2,7 +2,7 @@
 Changelog
 =========
 
-0.4.2 (2016-??-??)
+0.5.0 (2016-08-16)
 ------------------
 
 Features:
@@ -10,12 +10,17 @@ Features:
 - Add coverage to runtests.py
 - Added `initial` property to FieldExtractor
 - Added Extractors for date, datetime and time fields [Sergei Maertens]
+- Added Django 1.10 support
 
 Bugs Fixed:
 
 - Rewrote ChoiceWrapper [kezabelle with help from Sergei Maertens]
 - Raise TemplateSyntaxError when falsey value passed to {% form_field %}
   [kezzabelle]
+
+Backwards incompatible changes:
+
+- Dropped Django 1.7 support
 
 0.4.1 (2016-01-25)
 ------------------
