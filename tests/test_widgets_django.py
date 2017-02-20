@@ -175,7 +175,8 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             'email': '<input type="email" name="email" id="id_email" value="foo@bar.com" class=" " required>',
             'url': '<input type="url" name="url" id="id_url" value="https://example.com" class=" " required>',
             'number': '<input type="number" name="number" id="id_number" value="42" class=" " required>',
-            'password': '<input type="password" name="password" id="id_password" value="secret" class=" " required>',
+            # Password inputs should not re-render their contents.
+            'password': '<input type="password" name="password" id="id_password" value="" class=" " required>',
             'hidden': '<input type="hidden" name="hidden" id="id_hidden" value="peek-a-boo" class=" " required>',
             'multiple_hidden': [
                 '<input type="hidden" name="multiple_hidden" id="id_multiple_hidden_0" value="first" required>',

@@ -93,7 +93,7 @@ How to render errors
 {% block EmailInput %}{% reuse "input" input_type="email" %}{% endblock %}
 {% block NumberInput %}{% reuse "input" input_type="number" %}{% endblock %}
 {% block URLInput %}{% reuse "input" input_type="url" %}{% endblock %}
-{% block PasswordInput %}{% reuse "input" input_type="password" value="" %}{% endblock %}
+{% block PasswordInput %}{% reuse "input" input_type="password" raw_value="" %}{% endblock %}
 {% block HiddenInput %}{% reuse "input" input_type="hidden" label="" %}{% endblock %}
 {% block FileInput %}{% reuse "input" input_type="file" value="" %}{% endblock %}
 {% block DateInput %}{% reuse "input" input_type="date" raw_value=value %}{% endblock %}
