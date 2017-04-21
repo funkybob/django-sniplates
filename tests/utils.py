@@ -2,7 +2,6 @@ import copy
 import os
 
 from django.conf import settings
-from django.template import Context
 from django.test import override_settings
 
 
@@ -27,7 +26,7 @@ def template_dirs(*relative_dirs):
 class TemplateTestMixin(object):
 
     def setUp(self):
-        self.ctx = Context()
+        self.ctx = {}
 
     def assertNotInHTML(self, needle, haystack, msg_prefix=''):
         self.assertInHTML(needle, haystack, count=0, msg_prefix=msg_prefix)
