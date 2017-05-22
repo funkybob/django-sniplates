@@ -1,5 +1,3 @@
 {% load sniplates %}
 
-{% load_widgets widgets='widgets' _soft=True %}
-
 {% widget 'widgets:foo' %}
