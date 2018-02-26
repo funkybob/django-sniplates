@@ -56,7 +56,7 @@ Default, basic form rendering
 
 How to render labels
 {% block _label %}
-{% if label %}<label id="{{ id_for_label }}" for="{{ id }}">{{ label }}</label>{% endif %}
+{% if label %}<label for="{{ id_for_label }}">{{ label }}</label>{% endif %}
 {% endblock %}
 
 How to render help_text
