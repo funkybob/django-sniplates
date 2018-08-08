@@ -2,6 +2,17 @@
 Changelog
 =========
 
+0.6.0 (2018-08-08)
+------------------
+
+.. note: Support for Django < 1.11 has been officially dropped.
+
+Bugs fixed:
+
+- Password fields no longer render their value
+- Labels now have the currect ID value in their for attribute.
+- Date inputs format correctly.
+
 0.5.0 (2016-08-16)
 ------------------
 
