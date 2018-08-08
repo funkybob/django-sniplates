@@ -424,7 +424,7 @@ class DateTimeBaseExtractor(FieldExtractor):
     @cached_property
     def value(self):
         if isinstance(self['widget'], DateTimeBaseInput):
-            return self['widget']._format_value(self.raw_value)
+            return self['widget'].format_value(self.raw_value)
         # if it's a different widget, fall back to the default
         return super(DateTimeBaseExtractor, self).value
 

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-sniplates',
-    version='0.5.0',
+    version='0.6.0',
     description='Efficient template macro sets for Django',
     author='Curtis Maloney',
     author_email='curtis@tinbrain.net',
@@ -26,13 +26,9 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
     requires=[
-        'Django (>=1.7)',
+        'Django (>=1.11)',
     ],
     install_requires=[
-        'Django>=1.7',
+        'Django>=1.11',
     ],
-    tests_require=[
-        'coverage',
-        'django_coverage_plugin',
-    ]
 )
