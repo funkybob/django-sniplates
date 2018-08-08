@@ -54,9 +54,9 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 '<input type="hidden" name="multiple_hidden" id="id_multiple_hidden_2" value="n" required>',
                 '<input type="hidden" name="multiple_hidden" id="id_multiple_hidden_3" value="e" required>',
             ],
-            'date': '<input type="date" name="date" id="id_date" value="" class=" " required>',
-            'datetime': '<input type="datetime" name="datetime" id="id_datetime" value="" class=" " required>',
-            'time': '<input type="time" name="time" id="id_time" value="" class=" " required>',
+            'date': '<input type="text" name="date" id="id_date" value="" class=" " required>',
+            'datetime': '<input type="text" name="datetime" id="id_datetime" value="" class=" " required>',
+            'time': '<input type="text" name="time" id="id_time" value="" class=" " required>',
             'text': '<textarea name="text" id="id_text" class=" " required cols="40" rows="10"></textarea> ',
             'checkbox': '''
                 <label for="id_checkbox" class="">
@@ -182,9 +182,9 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 '<input type="hidden" name="multiple_hidden" id="id_multiple_hidden_0" value="first" required>',
                 '<input type="hidden" name="multiple_hidden" id="id_multiple_hidden_1" value="second" required>',
             ],
-            'date': '<input type="date" name="date" id="id_date" value="2016-01-25" class=" " required>',
-            'datetime': '<input type="datetime" name="datetime" id="id_datetime" value="2016-01-25 09:00:42" class=" " required>',
-            'time': '<input type="time" name="time" id="id_time" value="08:09:00" class=" " required>',
+            'date': '<input type="text" name="date" id="id_date" value="2016-01-25" class=" " required>',
+            'datetime': '<input type="text" name="datetime" id="id_datetime" value="2016-01-25 09:00:42" class=" " required>',
+            'time': '<input type="text" name="time" id="id_time" value="08:09:00" class=" " required>',
             'text': '<textarea name="text" id="id_text" class=" " required cols="40" rows="10">Lorem ipsum...</textarea> ',
             'checkbox': '''
                 <label for="id_checkbox" class="">
@@ -277,7 +277,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         output = tmpl.render(self.ctx)
         self.assertHTMLEqual(
             output,
-            '<input type="date" name="date" id="id_date" value="03-2016-27" class=" " required>'
+            '<input type="text" name="date" id="id_date" value="03-2016-27" class=" " required>'
         )
 
     def test_filefield_extractor(self):
