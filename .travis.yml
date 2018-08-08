@@ -29,7 +29,7 @@ matrix:
     - python: 3.7
       env: DJANGO=1.11.0
 
-script: python runtest.py
+script: ./runtests.py
 
 install:
   - pip install Django~=$DJANGO
