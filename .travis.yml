@@ -32,4 +32,4 @@ matrix:
 script: ./runtests.py
 
 install:
-  - pip install coverage django_coverage_plugin Django~=$DJANGO
+  - pip install Django~=$DJANGO
