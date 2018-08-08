@@ -31,8 +31,4 @@ setup(
     install_requires=[
         'Django>=1.11',
     ],
-    tests_require=[
-        'coverage',
-        'django_coverage_plugin',
-    ]
 )
