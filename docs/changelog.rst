@@ -10,7 +10,7 @@ Changelog
 Bugs fixed:
 
 - Password fields no longer render their value
-- Labels now have the currect ID value in their for attribute.
+- Labels now have the correct ID value in their for attribute.
 - Date inputs format correctly.
 
 0.5.0 (2016-08-16)
