@@ -301,7 +301,7 @@ class FieldExtractor(dict):
         ):
             self[attr] = getattr(field, attr)
 
-        for attr in ('widget', 'required'):
+        for attr in ('widget', 'required', 'disabled'):
             self[attr] = getattr(field.field, attr, None)
 
     def __contains__(self, key):
