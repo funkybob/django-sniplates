@@ -1,4 +1,5 @@
 sudo: false
+dist: xenial  # Workaround for Ubuntu being so far behind
 language: python
 python:
   - 3.4
