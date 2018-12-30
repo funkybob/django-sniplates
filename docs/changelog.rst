@@ -5,7 +5,11 @@ Changelog
 0.6.0 (2018-08-08)
 ------------------
 
-.. note: Support for Django < 1.11 has been officially dropped.
+.. note: Support for Django < 2.0 has been officially dropped.
+
+Features:
+
+- Now also extracts `disabled` from form fields.
 
 Bugs fixed:
 
