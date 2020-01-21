@@ -525,8 +525,8 @@ def reuse(context, block_list, **kwargs):
     if not isinstance(block_list, (list, tuple)):
         block_list = [block_list]
 
-    for block in block_list:
-        block = block_context.get_block(block)
+    for block_name in block_list:
+        block = block_context.get_block(block_name)
         if block:
             break
     else:
