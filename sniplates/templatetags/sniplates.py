@@ -7,7 +7,6 @@ from django.forms.widgets import DateTimeBaseInput
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import BLOCK_CONTEXT_KEY, BlockContext, BlockNode, ExtendsNode
-from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.functional import cached_property
 
@@ -40,7 +39,7 @@ def resolve_blocks(template, context):
         blocks = context.render_context[BLOCK_CONTEXT_KEY] = BlockContext()
 
     # If it's just the name, resolve into template
-    if isinstance(template, six.string_types):
+    if isinstance(template, str):
         template = get_template(template)
 
     # For Django 1.8 compatibility
