@@ -6,14 +6,12 @@ import datetime
 from django import forms
 from django.template.loader import get_template
 from django.test import SimpleTestCase
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.datastructures import MultiValueDict
 
 from .forms import DjangoWidgetsForm, FilesForm
 from .utils import TemplateTestMixin, template_dirs
 
 
-@python_2_unicode_compatible
 class FakeFieldFile(object):
     """
     Quacks like a FieldFile (has a .url and unicode representation), but
@@ -81,9 +79,9 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 </select>''',
             'null_boolean_select': '''
                 <select id="id_null_boolean_select" name="null_boolean_select">
-                <option value="1" selected="selected">Unknown</option>
-                <option value="2">Yes</option>
-                <option value="3">No</option>
+                <option value="unknown" selected>Unknown</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
                 </select>''',
             'select_multiple': '''
                 <select name="select_multiple" id="id_select_multiple" multiple>
@@ -160,7 +158,7 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
             'checkbox': [True],
             'select': ['22'],
             'optgroup_select': ['22'],
-            'null_boolean_select': [False],
+            'null_boolean_select': ["false"],
             'select_multiple': ['11', '22', 1],
             'radio_select': ['11'],
             'checkbox_select_multiple': ['1', 11],
@@ -209,9 +207,9 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
                 </select>''',
             'null_boolean_select': '''
                 <select id="id_null_boolean_select" name="null_boolean_select">
-                <option value="1">Unknown</option>
-                <option value="2">Yes</option>
-                <option value="3" selected>No</option>
+                    <option value="unknown">Unknown</option>
+                    <option value="true">Yes</option>
+                    <option value="false" selected>No</option>
                 </select>''',
             'select_multiple': '''
                 <select name="select_multiple" id="id_select_multiple" multiple>

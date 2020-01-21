@@ -7,7 +7,6 @@ from django.forms.widgets import DateTimeBaseInput
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import BLOCK_CONTEXT_KEY, BlockContext, BlockNode, ExtendsNode
-from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.functional import cached_property
 
@@ -40,7 +39,7 @@ def resolve_blocks(template, context):
         blocks = context.render_context[BLOCK_CONTEXT_KEY] = BlockContext()
 
     # If it's just the name, resolve into template
-    if isinstance(template, six.string_types):
+    if isinstance(template, str):
         template = get_template(template)
 
     # For Django 1.8 compatibility
@@ -384,12 +383,12 @@ class NullBooleanFieldExtractor(FieldExtractor):
     @cached_property
     def raw_value(self):
         """
-        When the value is None, it's actually rendered as '1', see
-        ``django.forms.widgets.NullBooleanSelect.render``
+        When the value is None, it's actually rendered as 'unknown', see
+        ``django.forms.widgets.NullBooleanSelect.__init__``
         """
-        raw_value = super(NullBooleanFieldExtractor, self).raw_value
+        raw_value = super().raw_value
         if raw_value is None:
-            return '1'
+            return 'unknown'
         return raw_value
 
     @cached_property
@@ -397,12 +396,21 @@ class NullBooleanFieldExtractor(FieldExtractor):
         """
         Maps True/False and 2/3 to the correct stringified version.
 
-        See ``django.forms.widgets.NullBooleanSelect.render``.
+        See ``django.forms.widgets.NullBooleanSelect.value_from_datadict``.
         """
         try:
-            return {True: '2', False: '3', '2': '2', '3': '3'}[self.raw_value]
+            return {
+                True: 'true',
+                False: 'false',
+                'true': 'true',
+                'false': 'false',
+                'True': 'true',
+                'False': 'false',
+                '2': 'true',
+                '3': 'false'
+            }[self.raw_value]
         except KeyError:
-            return '1'
+            return 'unknown'
 
     @cached_property
     def choices(self):
