@@ -383,12 +383,12 @@ class NullBooleanFieldExtractor(FieldExtractor):
     @cached_property
     def raw_value(self):
         """
-        When the value is None, it's actually rendered as '1', see
-        ``django.forms.widgets.NullBooleanSelect.render``
+        When the value is None, it's actually rendered as 'unknown', see
+        ``django.forms.widgets.NullBooleanSelect.__init__``
         """
-        raw_value = super(NullBooleanFieldExtractor, self).raw_value
+        raw_value = super().raw_value
         if raw_value is None:
-            return '1'
+            return 'unknown'
         return raw_value
 
     @cached_property
@@ -396,12 +396,21 @@ class NullBooleanFieldExtractor(FieldExtractor):
         """
         Maps True/False and 2/3 to the correct stringified version.
 
-        See ``django.forms.widgets.NullBooleanSelect.render``.
+        See ``django.forms.widgets.NullBooleanSelect.value_from_datadict``.
         """
         try:
-            return {True: '2', False: '3', '2': '2', '3': '3'}[self.raw_value]
+            return {
+                True: 'true',
+                False: 'false',
+                'true': 'true',
+                'false': 'false',
+                'True': 'true',
+                'False': 'false',
+                '2': 'true',
+                '3': 'false'
+            }[self.raw_value]
         except KeyError:
-            return '1'
+            return 'unknown'
 
     @cached_property
     def choices(self):
