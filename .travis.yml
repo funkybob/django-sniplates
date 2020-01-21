@@ -12,6 +12,13 @@ env:
   - DJANGO=2.2.0
   - DJANGO=3.0.0
 
+matrix:
+  exclude:
+    - python: 3.5
+      env: DJANGO=3.0.0
+    - python: pypy3.5
+      env: DJANGO=3.0.0
+
 script: ./runtests.py
 
 install:
