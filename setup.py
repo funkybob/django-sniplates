@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-sniplates',
-    version='0.6.0',
+    version='0.7.0',
     description='Efficient template macro sets for Django',
     author='Curtis Maloney',
     author_email='curtis@tinbrain.net',
