@@ -43,8 +43,8 @@ an arsenal of template macros.
 Requirements
 ------------
 
-Requires Django 1.8 or newer, and is tested against Python 2.7, 3.3, 3.4, 3.5 and
-PyPy.
+Requires Django 2.2 or newer, and is tested against Python  3.5, 3.6, 3.7, 3.8,
+PyP and PyPy3.5
 
 Quick-start
 -----------
