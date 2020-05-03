@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "django-sniplates"
+version = "0.7.0"
+description = "Efficient template macro sets for Django"
+authors = ["Curtis Maloney <curtis@tinbrain.net>"]
+readme = "README.md"
+license = "MIT"
+keywords = ["django", "templates", "forms"]
+documentation = "https://sniplates.readthedocs.io/en/latest/"
+classifiers = [
+  "Environment :: Web Environment",
+  "Framework :: Django',
+  "Framework :: Django :: 2.2',
+  "Framework :: Django :: 3.0',
+  "License :: OSI Approved :: BSD License',
+  "Operating System :: OS Independent',
+  "Programming Language :: Python',
+  "Programming Language :: Python :: 3.6',
+  "Programming Language :: Python :: 3.7',
+  "Programming Language :: Python :: 3.8',
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+django = "^3.0.5"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.7.9"
+isort = "^4.3.21"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
