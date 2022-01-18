@@ -9,15 +9,15 @@ keywords = ["django", "templates", "forms"]
 documentation = "https://sniplates.readthedocs.io/en/latest/"
 classifiers = [
   "Environment :: Web Environment",
-  "Framework :: Django",
-  "Framework :: Django :: 2.2",
-  "Framework :: Django :: 3.0",
-  "License :: OSI Approved :: BSD License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.6",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
+  "Framework :: Django',
+  "Framework :: Django :: 2.2',
+  "Framework :: Django :: 3.0',
+  "License :: OSI Approved :: BSD License',
+  "Operating System :: OS Independent',
+  "Programming Language :: Python',
+  "Programming Language :: Python :: 3.6',
+  "Programming Language :: Python :: 3.7',
+  "Programming Language :: Python :: 3.8',
 ]
 
 [tool.poetry.dependencies]
