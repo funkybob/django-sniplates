@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "django-sniplates"
+name = "sniplates"
 version = "0.7.0"
 description = "Efficient template macro sets for Django"
 authors = ["Curtis Maloney <curtis@tinbrain.net>"]
