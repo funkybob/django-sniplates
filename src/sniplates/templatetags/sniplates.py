@@ -7,7 +7,7 @@ from django.forms.widgets import DateTimeBaseInput
 from django.template.base import token_kwargs
 from django.template.loader import get_template
 from django.template.loader_tags import BLOCK_CONTEXT_KEY, BlockContext, BlockNode, ExtendsNode
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.functional import cached_property
 
 register = template.Library()
@@ -258,7 +258,7 @@ class ChoiceWrapper(tuple):
         return super(ChoiceWrapper, cls).__new__(cls, tuple(tuple_args))
 
     def __init__(self, value, display):
-        self.value = force_text(value)
+        self.value = force_str(value)
         self._display = display
 
     def __repr__(self):
@@ -275,11 +275,11 @@ class ChoiceWrapper(tuple):
     @property
     def display(self):
         """
-        When dealing with optgroups, ensure that the value is properly force_text'd.
+        When dealing with optgroups, ensure that the value is properly force_str'd.
         """
         if not self.is_group():
             return self._display
-        return ((force_text(k), v) for k, v in self._display)
+        return ((force_str(k), v) for k, v in self._display)
 
 
 class FieldExtractor(dict):
@@ -319,8 +319,8 @@ class FieldExtractor(dict):
     @cached_property
     def value(self):
         if isinstance(self.raw_value, (tuple, list)):
-            return [force_text(bit) for bit in self.raw_value]
-        return force_text(self.raw_value)
+            return [force_str(bit) for bit in self.raw_value]
+        return force_str(self.raw_value)
 
     @cached_property
     def initial(self):
@@ -419,7 +419,7 @@ class NullBooleanFieldExtractor(FieldExtractor):
             return c
 
         return tuple(
-            ChoiceWrapper(value=force_text(k), display=v)
+            ChoiceWrapper(value=force_str(k), display=v)
             for k, v in c
         )
 
