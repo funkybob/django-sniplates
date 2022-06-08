@@ -52,9 +52,7 @@ def resolve_blocks(template, context):
     }
     blocks.add_blocks(local_blocks)
 
-    # Do we extend a parent template?
-    extends = template.nodelist.get_nodes_by_type(ExtendsNode)
-    if extends:
+    if extends := template.nodelist.get_nodes_by_type(ExtendsNode):
         # Can only have one extends in a template
         extends_node = extends[0]
 
@@ -185,13 +183,19 @@ def widget(parser, token):
     try:
         widget = parser.compile_filter(bits.pop(0))
     except IndexError:
-        raise template.TemplateSyntaxError('%s requires one positional argument' % tag_name)
+        raise template.TemplateSyntaxError(
+            f'{tag_name} requires one positional argument'
+        )
+
 
     asvar = pop_asvar(bits)
 
     kwargs = token_kwargs(bits, parser)
     if bits:
-        raise template.TemplateSyntaxError('%s accepts only one positional argument' % tag_name)
+        raise template.TemplateSyntaxError(
+            f'{tag_name} accepts only one positional argument'
+        )
+
 
     return Widget(widget, kwargs, asvar)
 
@@ -236,14 +240,20 @@ def nested_widget(parser, token):
     try:
         widget = parser.compile_filter(bits.pop(0))
     except IndexError:
-        raise template.TemplateSyntaxError('%s requires one positional argument' % tag_name)
+        raise template.TemplateSyntaxError(
+            f'{tag_name} requires one positional argument'
+        )
+
 
     asvar = pop_asvar(bits)
 
     kwargs = token_kwargs(bits, parser)
 
     if bits:
-        raise template.TemplateSyntaxError('%s accepts only one positional argument' % tag_name)
+        raise template.TemplateSyntaxError(
+            f'{tag_name} accepts only one positional argument'
+        )
+
 
     nodelist = parser.parse(('endnested',))
     parser.delete_first_token()
@@ -262,7 +272,7 @@ class ChoiceWrapper(tuple):
         self._display = display
 
     def __repr__(self):
-        return 'ChoiceWrapper(value=%s, display=%s)' % (self.value, self.display)
+        return f'ChoiceWrapper(value={self.value}, display={self.display})'
 
     def __iter__(self):
         # overriden from tuple to retrun the formatted display
@@ -277,9 +287,11 @@ class ChoiceWrapper(tuple):
         """
         When dealing with optgroups, ensure that the value is properly force_str'd.
         """
-        if not self.is_group():
-            return self._display
-        return ((force_str(k), v) for k, v in self._display)
+        return (
+            ((force_str(k), v) for k, v in self._display)
+            if self.is_group()
+            else self._display
+        )
 
 
 class FieldExtractor(dict):
