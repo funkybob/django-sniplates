@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sniplates"
-version = "0.7.0"
+version = "0.7.1"
 description = "Efficient template macro sets for Django"
 authors = ["Curtis Maloney <curtis@tinbrain.net>"]
 readme = "README.md"

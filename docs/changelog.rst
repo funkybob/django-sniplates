@@ -2,6 +2,15 @@
 Changelog
 =========
 
+0.7.1 (2020-01-22)
+------------------
+
+.. note: Support for Python 2 has been completely dropped.
+
+Features:
+
+- Proper use of force_str now that old APIs have been dropped from Django.
+
 0.6.0 (2018-08-08)
 ------------------
 
