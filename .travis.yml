@@ -2,22 +2,30 @@ sudo: false
 dist: xenial  # Workaround for Ubuntu being so far behind
 language: python
 python:
-  - 3.5
   - 3.6
   - 3.7
   - 3.8
-  - pypy3.5
+  - 3.9
+  - 3.10
+  - 3.11
 
 env:
-  - DJANGO=2.2.0
-  - DJANGO=3.0.0
+  - DJANGO=2.2
+  - DJANGO=3.2
+  - DJANGO=4.0
+  - DJANGO=4.1
+  - DJANGO=4.2
 
 matrix:
   exclude:
-    - python: 3.5
-      env: DJANGO=3.0.0
-    - python: pypy3.5
-      env: DJANGO=3.0.0
+    - python: 3.10
+      env: DJANGO=2.2
+    - python: 3.10
+      env: DJANGO=3.2
+    - python: 3.7
+      env: DJANGO=4.0
+    - python: 3.7
+      env: DJANGO=4.1
 
 script: ./runtests.py
 
