@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sniplates"
-version = "0.7.1"
+version = "0.7.2"
 description = "Efficient template macro sets for Django"
 authors = ["Curtis Maloney <curtis@tinbrain.net>"]
 readme = "README.md"
@@ -15,14 +15,15 @@ classifiers = [
   "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.6",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-django = "^3.0.5"
+python = ">=3.8"
+django = ">=3.0.5"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7.9"
