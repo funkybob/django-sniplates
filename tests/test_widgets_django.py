@@ -2,7 +2,7 @@
 Tests for all shipped sniplates/django.html widgets.
 """
 import datetime
-
+import django
 from django import forms
 from django.template.loader import get_template
 from django.test import SimpleTestCase
@@ -40,7 +40,10 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         # map field to expected widget output
         expected_output = {
             'char': '<input type="text" name="char" id="id_char" value="" class=" " required>',
-            'email': '<input type="email" name="email" id="id_email" value="" class=" " required>',
+            'email': {
+                '<3.2.20': '<input type="email" name="email" id="id_email" value="" class=" " required>',
+                '>=3.2.20': '<input type="email" name="email" id="id_email" value="" class=" " maxlength="320" required>',
+            },
             'url': '<input type="url" name="url" id="id_url" value="" class=" " required>',
             'number': '<input type="number" name="number" id="id_number" value="" class=" " required>',
             'password': '<input type="password" name="password" id="id_password" value="" class=" " required>',
@@ -110,7 +113,10 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         }
 
         self.assertInHTML(expected_output['char'], output, msg_prefix='TextInput rendered incorrectly: ')
-        self.assertInHTML(expected_output['email'], output, msg_prefix='EmailInput rendered incorrectly: ')
+        if django.VERSION < (3, 2, 20):
+            self.assertInHTML(expected_output['email']['<3.2.20'], output, msg_prefix='EmailInput rendered incorrectly: ')
+        else:
+            self.assertInHTML(expected_output['email']['>=3.2.20'], output, msg_prefix='EmailInput rendered incorrectly: ')
         self.assertInHTML(expected_output['url'], output, msg_prefix='UrlInput rendered incorrectly: ')
         self.assertInHTML(expected_output['number'], output, msg_prefix='NumberInput rendered incorrectly: ')
         self.assertInHTML(expected_output['password'], output, msg_prefix='PasswordInput rendered incorrectly: ')
@@ -170,7 +176,10 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
 
         expected = {
             'char': '<input type="text" name="char" id="id_char" value="test char" class=" " required>',
-            'email': '<input type="email" name="email" id="id_email" value="foo@bar.com" class=" " required>',
+            'email': {
+                '<3.2.20': '<input type="email" name="email" id="id_email" value="foo@bar.com" class=" " required>',
+                '>=3.2.20': '<input type="email" name="email" id="id_email" value="foo@bar.com" class=" " maxlength="320" required>',
+            },
             'url': '<input type="url" name="url" id="id_url" value="https://example.com" class=" " required>',
             'number': '<input type="number" name="number" id="id_number" value="42" class=" " required>',
             # Password inputs should not re-render their contents.
@@ -239,7 +248,10 @@ class TestFieldTag(TemplateTestMixin, SimpleTestCase):
         }
 
         self.assertInHTML(expected['char'], output)
-        self.assertInHTML(expected['email'], output)
+        if django.VERSION < (3, 2, 20):
+            self.assertInHTML(expected['email']['<3.2.20'], output)
+        else:
+            self.assertInHTML(expected['email']['>=3.2.20'], output)
         self.assertInHTML(expected['url'], output)
         self.assertInHTML(expected['number'], output)
         self.assertInHTML(expected['password'], output)
