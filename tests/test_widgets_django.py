@@ -2,6 +2,7 @@
 Tests for all shipped sniplates/django.html widgets.
 """
 import datetime
+
 import django
 from django import forms
 from django.template.loader import get_template

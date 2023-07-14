@@ -1,6 +1,8 @@
 from collections import OrderedDict
-from django.test import SimpleTestCase
+
 from django.template.loader import get_template
+from django.test import SimpleTestCase
+
 from .utils import TemplateTestMixin, template_dirs
 
 
