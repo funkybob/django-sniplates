@@ -1,17 +1,21 @@
-[tool.poetry]
+[project]
 name = "django-sniplates"
 version = "0.7.2"
 description = "Efficient template macro sets for Django"
-authors = ["Curtis Maloney <curtis@tinbrain.net>"]
+authors = [
+  { name = "Curtis Maloney", email="curtis@tinbrain.net" },
+]
 readme = "README.md"
-license = "MIT"
+license = { file = "LICENSE" }
 keywords = ["django", "templates", "forms"]
-documentation = "https://sniplates.readthedocs.io/en/latest/"
 classifiers = [
   "Environment :: Web Environment",
   "Framework :: Django",
   "Framework :: Django :: 2.2",
-  "Framework :: Django :: 3.0",
+  "Framework :: Django :: 3",
+  "Framework :: Django :: 4.0",
+  "Framework :: Django :: 4.1",
+  "Framework :: Django :: 4.2",
   "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
@@ -20,22 +24,50 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
 ]
-packages = [
-  { include = "sniplates", from = "src" },
+
+dependencies = [
+  "django (>=3.0.5)",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.8"
-django = ">=3.0.5"
+[project.urls]
+Repository = "https://github.com/funkybob/django-sniplates"
+Documentation = "https://sniplates.readthedocs.io/en/latest/"
 
-[tool.poetry.dev-dependencies]
-flake8 = "^3.7.9"
-isort = "^4.3.21"
+[project.optional-dependencies]
+test = [
+  "isort",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "pylint",
+  "pylint-pytest",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-include_package_data = true
+package-dir = { "" = "src/" }
+include-package-data = false
 
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+
+django_find_project = false
+pythonpath = ["."]
+
+addopts = "--cov=src/"
+
+[tool.coverage.run]
+branch = true
+source = ["src/"]
+
+[tool.pylint."message control"]
+disable = ["missing-module-docstring", "missing-class-docstring", "missing-function-docstring"]
+
+[tool.isort]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+line_length = 119

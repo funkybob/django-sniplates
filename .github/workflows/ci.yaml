@@ -1,0 +1,49 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        django-version: ["2.2", "3.2", "4.0", "4.1", "4.2"]
+        exclude:
+          - python-version: 3.11
+            django-version: 3.2
+          - python-version: 3.7
+            django-version: 4.0
+          - python-version: 3.11
+            django-version: 4.0
+          - python-version: 3.7
+            django-version: 4.1
+          - python-version: 3.7
+            django-version: 4.2
+
+    services:
+      redis:
+        image: redis
+        ports:
+          # Don't ask me why, but we need to map this to a different port
+          # Thanks, Dan Sloan, for the tip.
+          - 16379:6379
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install
+      run: |
+        pip install -U pip
+        pip install -e .[test] Django==${{ matrix.django-version }}
+    - name: Lint
+      run: pylint rated/
+    - name: isort
+      run: isort --check rated/
+    - name: Test
+      run: pytest
