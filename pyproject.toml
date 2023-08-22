@@ -64,7 +64,7 @@ branch = true
 source = ["src/"]
 
 [tool.pylint."message control"]
-disable = ["missing-module-docstring", "missing-class-docstring", "missing-function-docstring"]
+disable = ["missing-module-docstring", "missing-class-docstring", "missing-function-docstring", "raise-missing-from", "redefined-outer-name"]
 
 [tool.isort]
 combine_as_imports = true
