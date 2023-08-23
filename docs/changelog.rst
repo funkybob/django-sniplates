@@ -2,6 +2,28 @@
 Changelog
 =========
 
+0.7.3 (XXXX-XX-XX)
+------------------
+
+Features:
+
+- Rewrote the `{% widget %}` tag using `simple_tag`
+
+Housekeeping:
+
+Updated CI from travis to GitHub Actions.
+
+Currently testing against:
+Python : 3.7, 3.8, 3.9, 3.10, 3.11
+Django : 3.0, 3.1, 3.2, 4.0, 4.1, 4.2
+
+0.7.2 (2023-08-22)
+------------------
+
+Features:
+
+- Added support and widget parity for Django > 3.2.20
+
 0.7.1 (2020-01-22)
 ------------------
 
