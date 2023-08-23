@@ -22,9 +22,10 @@ def template_dirs(*relative_dirs):
     return override_settings(TEMPLATES=TEMPLATES)
 
 
-class TemplateTestMixin(object):
+class TemplateTestMixin:
 
     def setUp(self):
+        super().setUp()
         self.ctx = {}
 
     def assertNotInHTML(self, needle, haystack, msg_prefix=''):
