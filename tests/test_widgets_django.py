@@ -13,7 +13,7 @@ from .forms import DjangoWidgetsForm, FilesForm
 from .utils import TemplateTestMixin, template_dirs
 
 
-class FakeFieldFile(object):
+class FakeFieldFile:
     """
     Quacks like a FieldFile (has a .url and unicode representation), but
     doesn't require us to care about storages etc.
