@@ -150,51 +150,14 @@ def pop_asvar(bits):
     return None
 
 
-class Widget(Node):
-    def __init__(self, widget, kwargs, asvar):
-        self.widget = widget
-        self.kwargs = kwargs
-        self.asvar = asvar
+@register.simple_tag(takes_context=True)
+def widget(context, name, **kwargs):
+    alias, block_name = parse_widget_name(name)
 
-    def render(self, context):
-        widget = self.widget.resolve(context)
-
-        alias, block_name = parse_widget_name(widget)
-
-        with using(context, alias):
-            block = find_block(context, block_name)
-
-            kwargs = {
-                key: val.resolve(context)
-                for key, val in self.kwargs.items()
-            }
-            with context.push(kwargs):
-                result = block.render(context)
-
-            if self.asvar:
-                context[self.asvar] = result
-                return ''
-
-            return result
-
-
-@register.tag
-def widget(parser, token):
-    bits = token.split_contents()
-    tag_name = bits.pop(0)
-
-    try:
-        widget = parser.compile_filter(bits.pop(0))
-    except IndexError:
-        raise TemplateSyntaxError(f'{tag_name} requires one positional argument')
-
-    asvar = pop_asvar(bits)
-
-    kwargs = token_kwargs(bits, parser)
-    if bits:
-        raise TemplateSyntaxError(f'{tag_name} accepts only one positional argument')
-
-    return Widget(widget, kwargs, asvar)
+    with using(context, alias):
+        block = find_block(context, block_name)
+        with context.push(kwargs):
+            return block.render(context)
 
 
 class NestedWidget(Node):
@@ -489,24 +452,19 @@ def form_field(context, field, widget=None, **kwargs):
 
 def auto_widget(field):
     '''Return a list of widget names for the provided field.'''
-    # Auto-detect
-    info = {
-        'widget': field.field.widget.__class__.__name__,
-        'field': field.field.__class__.__name__,
-        'name': field.name,
-    }
+
+    name = field.name
+    widget = field.field.widget.__class__.__name__
+    field = field.field.__class__.__name__
 
     return [
-        fmt.format(**info)
-        for fmt in (
-            '{field}_{widget}_{name}',
-            '{field}_{name}',
-            '{widget}_{name}',
-            '{field}_{widget}',
-            '{name}',
-            '{widget}',
-            '{field}',
-        )
+        f'{field}_{widget}_{name}',
+        f'{field}_{name}',
+        f'{widget}_{name}',
+        f'{field}_{widget}',
+        f'{name}',
+        f'{widget}',
+        f'{field}',
     ]
 
 
