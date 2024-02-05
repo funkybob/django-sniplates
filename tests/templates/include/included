@@ -1,0 +1,3 @@
+{% load sniplates %}
+
+{% widget 'widgets:foo' %}
